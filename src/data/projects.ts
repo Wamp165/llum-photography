@@ -4,6 +4,6 @@ export async function getProjects() {
   return await sql`
     SELECT *
     FROM projects
-    ORDER BY created_at DESC
+    ORDER BY position ASC
   `;
 }
