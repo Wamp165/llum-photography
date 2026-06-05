@@ -1,9 +1,10 @@
 import { sql } from "@/lib/db";
+import type { Project } from "@/types/project";
 
-export async function getProjects() {
-  return await sql`
+export async function getProjects(): Promise<Project[]> {
+  return await sql<Project[]>`
     SELECT *
     FROM projects
-    ORDER BY position ASC
+    ORDER BY position
   `;
 }
