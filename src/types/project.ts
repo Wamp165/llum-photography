@@ -3,6 +3,7 @@ export type Project = {
   category_id: number | null;
   title: string;
   slug: string;
+  description: string | null;
   layout: string;
   position: number;
   introduction: string | null;
