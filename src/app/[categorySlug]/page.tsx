@@ -22,10 +22,6 @@ export default async function CategoryPage({
   const projects =
     await getProjectsByCategory(categorySlug);
 
-  if (projects.length === 0) {
-    notFound();
-  }
-
   const layout = projects[0]?.layout;
   switch (layout) {
     case "editorial":
