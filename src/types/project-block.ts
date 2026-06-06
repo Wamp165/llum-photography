@@ -1,5 +1,5 @@
 export type ProjectBlockType =
-  | "only_image_center"
+  | "image_gallery"
   | "only_text_center"
   | "carousel"
   | "image_left_text_right"

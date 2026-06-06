@@ -1,6 +1,7 @@
 import type { ProjectBlock } from "@/types/project-block";
-import type { ImageBlockContent } from "@/types/project-block-content";
-import OnlyImageCenter from "./OnlyImageCenter";
+import type { ImageBlockContent, TextBlockContent } from "@/types/project-block-content";
+import ImageGallery from "./ImageGallery";
+import OnlyTextCenter from "./OnlyTextCenter";
 
 type Props = {
   block: ProjectBlock;
@@ -10,15 +11,25 @@ export default function BlockRenderer({
   block,
 }: Props) {
   switch (block.type) {
-    case "only_image_center": {
+    case "image_gallery": {
       const content =
         block.content as ImageBlockContent;
 
       return (
-        <OnlyImageCenter
+        <ImageGallery
           images={content.images}
         />
       );
+    }
+    case "only_text_center": {
+    const content =
+        block.content as TextBlockContent;
+
+    return (
+        <OnlyTextCenter
+        text={content.text}
+        />
+    );
     }
 
     default:

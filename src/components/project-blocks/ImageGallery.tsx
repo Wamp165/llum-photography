@@ -4,7 +4,7 @@ type Props = {
   images: string[];
 };
 
-export default function OnlyImageCenter({
+export default function ImageGallery({
   images,
 }: Props) {
   if (images.length === 0) {
