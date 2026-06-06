@@ -1,8 +1,5 @@
 import { sql } from "@/lib/db";
-
-import type {
-  ProjectBlock,
-} from "@/types/project-block";
+import type {ProjectBlock} from "@/types/project-block";
 
 export async function getProjectBlocks(
   projectId: number
