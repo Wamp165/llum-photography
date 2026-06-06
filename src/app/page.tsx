@@ -1,6 +1,8 @@
+import Navbar from "@/components/Navbar";
+import ImageCarousel from "@/components/ImageCarousel";
+
 import { getSettings } from "@/data/settings";
 import { getCategories } from "@/data/categories";
-import Navbar from "@/components/Navbar";
 
 export default async function Home() {
   const [settings, categories] = await Promise.all([
@@ -9,11 +11,17 @@ export default async function Home() {
   ]);
 
   return (
-    <main>
+    <>
       <Navbar
         photographerName={settings.photographer_name}
         categories={categories}
       />
-    </main>
+
+      <main>
+        <ImageCarousel
+          images={settings.homepage_images ?? []}
+        />
+      </main>
+    </>
   );
 }
