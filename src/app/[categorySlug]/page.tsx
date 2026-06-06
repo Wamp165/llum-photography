@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { getProjectsByCategory } from "@/data/projects";
-import Editorial from "@/components/project-layouts/Editorial";
+import Editorial from "@/components/category-layouts/Editorial";
 import { getCategoryBySlug } from "@/data/categories";
+import Grid from "@/components/category-layouts/Grid";
 
 type Props = {
   params: Promise<{
@@ -22,7 +23,7 @@ export default async function CategoryPage({
   const projects =
     await getProjectsByCategory(categorySlug);
 
-  const layout = projects[0]?.layout;
+  const layout = category.layout;
   switch (layout) {
     case "editorial":
       return (
@@ -36,6 +37,12 @@ export default async function CategoryPage({
         <main className="mx-auto max-w-6xl px-8">
           <Editorial projects={projects} />
         </main>
+      );
+      case "grid":
+      return (
+        <Grid
+          projects={projects}
+        />
       );
   }
 }

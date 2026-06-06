@@ -1,12 +1,9 @@
-import type { ProjectLayout } from "./project-layout";
-
 export type Project = {
   id: number;
   category_id: number | null;
   title: string;
   slug: string;
   description: string | null;
-  layout: ProjectLayout;
   position: number;
   introduction: string | null;
   cover_image: string | null;
