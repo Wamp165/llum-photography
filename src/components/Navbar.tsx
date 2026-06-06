@@ -27,8 +27,8 @@ export default function Navbar({
             </Link>
           ))}
 
-          <Link href="/contact">
-            Contact
+          <Link href="/about">
+            About
           </Link>
         </div>
       </nav>
