@@ -1,10 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-
-import type { Project } from "@/types/project";
+import type { ProjectListItem } from "@/types/project-list-item";
 
 type Props = {
-  projects: Project[];
+  projects: ProjectListItem[];
 };
 
 export default function Editorial({
@@ -15,7 +14,7 @@ export default function Editorial({
       {projects.map((project) => (
         <Link
           key={project.id}
-          href="#"
+          href={`/${project.category_slug}/${project.slug}`}
           className="block border-b border-neutral-200 py-16"
         >
           <article className="flex gap-12">

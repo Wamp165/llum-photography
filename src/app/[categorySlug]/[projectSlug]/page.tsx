@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 
-import { getProjectBySlug }
-  from "@/data/projects";
+import { getProjectBySlug } from "@/data/projects";
 
 type Props = {
   params: Promise<{
@@ -18,21 +18,49 @@ export default async function ProjectPage({
     projectSlug,
   } = await params;
 
-  const project =
-    await getProjectBySlug(
-      categorySlug,
-      projectSlug
-    );
+  const project = await getProjectBySlug(
+    categorySlug,
+    projectSlug
+  );
 
   if (!project) {
     notFound();
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-8 py-16">
-      <h1 className="text-3xl">
-        {project.title}
-      </h1>
+    <main className="mx-auto max-w-[1400px] px-8">
+      {project.cover_image && (
+        <div className="mt-12 flex justify-center">
+          <Image
+            src={project.cover_image}
+            alt={project.title}
+            width={1800}
+            height={1200}
+            priority
+            className="h-auto max-h-[75vh] w-auto"
+          />
+        </div>
+      )}
+
+      <section className="mx-auto mt-8 max-w-3xl">
+        <h1 className="mb-2 text-xl font-medium">
+          {project.title}
+        </h1>
+
+        {project.project_date && (
+          <p className="mb-8 text-sm text-neutral-500">
+            {new Date(
+              project.project_date
+            ).toLocaleDateString()}
+          </p>
+        )}
+
+        {project.introduction && (
+          <p className="leading-8">
+            {project.introduction}
+          </p>
+        )}
+      </section>
     </main>
   );
 }

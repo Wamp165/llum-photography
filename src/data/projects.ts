@@ -1,19 +1,20 @@
 import { sql } from "@/lib/db";
 import type { Project } from "@/types/project";
+import type { ProjectListItem } from "@/types/project-list-item";
 
 export async function getProjectsByCategory(
   categorySlug: string
-): Promise<Project[]> {
-  const projects = await sql<Project[]>`
-    SELECT p.*
+): Promise<ProjectListItem[]> {
+  return await sql<ProjectListItem[]>`
+    SELECT
+      p.*,
+      c.slug AS category_slug
     FROM projects p
     INNER JOIN categories c
       ON c.id = p.category_id
     WHERE c.slug = ${categorySlug}
     ORDER BY p.position ASC
   `;
-
-  return projects;
 }
 
 export async function getProjectBySlug(
@@ -21,9 +22,7 @@ export async function getProjectBySlug(
   projectSlug: string
 ): Promise<Project | null> {
   const projects = await sql<Project[]>`
-    SELECT 
-      p.*,
-      c.slug AS category_slug
+    SELECT p.*
     FROM projects p
     INNER JOIN categories c
       ON c.id = p.category_id

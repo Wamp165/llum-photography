@@ -1,5 +1,4 @@
 import Image from "next/image";
-
 import { getSettings } from "@/data/settings";
 
 export default async function AboutPage() {
