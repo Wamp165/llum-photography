@@ -8,3 +8,16 @@ export async function getCategories(): Promise<Category[]> {
     ORDER BY position ASC
   `;
 }
+
+export async function getCategoryBySlug(
+  slug: string
+): Promise<Category | null> {
+  const categories = await sql<Category[]>`
+    SELECT *
+    FROM categories
+    WHERE slug = ${slug}
+    LIMIT 1
+  `;
+
+  return categories[0] ?? null;
+}
