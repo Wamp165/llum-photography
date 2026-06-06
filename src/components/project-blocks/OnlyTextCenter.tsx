@@ -6,9 +6,9 @@ export default function OnlyTextCenter({
   text,
 }: Props) {
   return (
-    <section className="my-16">
+    <section className="my-24">
       <div className="mx-auto max-w-2xl">
-        <p className="leading-8">
+        <p className="whitespace-pre-line leading-8">
           {text}
         </p>
       </div>

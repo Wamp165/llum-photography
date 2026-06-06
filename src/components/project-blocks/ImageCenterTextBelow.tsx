@@ -1,0 +1,31 @@
+import Image from "next/image";
+
+type Props = {
+  image: string;
+  text: string;
+};
+
+export default function ImageCenterTextBelow({
+  image,
+  text,
+}: Props) {
+  return (
+    <section className="my-24">
+      <div className="flex justify-center">
+        <Image
+          src={image}
+          alt=""
+          width={1800}
+          height={1200}
+          className="h-auto max-h-[75vh] w-auto"
+        />
+      </div>
+
+      <div className="mx-auto mt-10 max-w-2xl">
+        <p className="whitespace-pre-line leading-8">
+          {text}
+        </p>
+      </div>
+    </section>
+  );
+}
