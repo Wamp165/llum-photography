@@ -17,7 +17,7 @@ export default async function Home() {
         categories={categories}
       />
 
-      <main>
+      <main className="mx-auto max-w-[1400px] px-8">
         <ImageCarousel
           images={settings.homepage_images ?? []}
         />
