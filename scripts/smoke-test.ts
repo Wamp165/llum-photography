@@ -58,7 +58,9 @@ async function main() {
     const blocks = await import("@/data/project-blocks");
     const { isUniqueViolation } = await import("@/data/errors");
 
-    await sql`INSERT INTO settings (id, photographer_name) VALUES (1, 'Smoke Test')`;
+    // The migrations create the settings row: a fresh deploy must not crash on getSettings().
+    const [seeded] = await sql`SELECT 1 FROM settings WHERE id = 1`;
+    assert(seeded, "The migrations did not create the settings row.");
 
     const image = (name: string) => `https://res.cloudinary.com/demo/image/upload/${name}.jpg`;
     const form = (values: Record<string, string>) => {

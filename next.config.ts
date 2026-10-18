@@ -1,8 +1,26 @@
 import type { NextConfig } from "next";
 
+// Dev only: lets `next dev` serve its scripts to the extra origins allowed to sign in
+// (e.g. the LAN IP, to test from a phone), not just localhost.
+const devOrigins = (process.env.BETTER_AUTH_TRUSTED_ORIGINS ?? "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean)
+  .map((origin) => new URL(origin).hostname);
+
+const securityHeaders = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+];
+
 const nextConfig: NextConfig = {
-  // Dev only: lets `next dev` serve its scripts when opened via the LAN IP, not just localhost.
-  allowedDevOrigins: ["192.168.0.29"],
+  allowedDevOrigins: devOrigins,
+  poweredByHeader: false,
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
+  },
   images: {
     // Cloudinary resizes the images (src/lib/cloudinary-loader.ts), not this server.
     loader: "custom",

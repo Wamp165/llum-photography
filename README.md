@@ -31,6 +31,32 @@ npm run dev
 
 Site: http://localhost:3000 · Admin: http://localhost:3000/admin
 
+The first migration creates the settings row with a placeholder name: change it in
+Admin → Settings.
+
+## Deploying (Vercel + Supabase)
+
+1. **Database**: create a Supabase project and use it only as PostgreSQL. In its settings,
+   **disable the Data API** and **enable RLS on every table** (no policies needed: the app
+   connects directly as the table owner).
+2. **Schema and admin**, from your machine, with `DATABASE_URL` in `.env.local` pointing at
+   Supabase's **transaction pooler** (port 6543) and `DATABASE_PREPARE=false`:
+   ```bash
+   npm run db:migrate
+   npm run admin:create
+   ```
+   Then point `.env.local` back to your local database.
+3. **Vercel**: import the repository and set every variable of `.env.example`:
+   - `BETTER_AUTH_SECRET`: a **new** secret (`openssl rand -base64 32`), not the local one.
+   - `BETTER_AUTH_URL`: the production URL (`https://...`).
+   - `BETTER_AUTH_TRUSTED_ORIGINS`: empty.
+   - `CLOUDINARY_API_SECRET`: never with a `NEXT_PUBLIC_` prefix.
+4. **Check**: the site loads, `/admin` redirects to the login page, you can sign in and
+   upload an image.
+
+Secrets live only in `.env.local` (git-ignored) and in Vercel's settings; nothing secret is
+committed to the repository.
+
 ## Commands
 
 | Command | What it does |
