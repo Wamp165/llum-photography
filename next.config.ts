@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
     ],
   },
   reactCompiler: true,
+  experimental: {
+    // There are two root layouts (site and admin), so unmatched URLs need
+    // src/app/global-not-found.tsx.
+    globalNotFound: true,
+  },
 };
 
 export default nextConfig;
