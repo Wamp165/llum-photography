@@ -6,29 +6,29 @@ export default function Editorial({
   projects,
 }: CategoryLayoutProps) {
   return (
-    <div className="mx-auto max-w-6xl">
+    <div>
       {projects.map((project) => (
         <Link
           key={project.id}
           href={`/${project.category_slug}/${project.slug}`}
-          className="block border-b border-neutral-200 py-16"
+          className="block border-b border-neutral-200 py-14 first:pt-0 last:border-b-0"
         >
-          <article className="flex flex-col gap-8 md:flex-row md:gap-12">
+          <article className="grid items-start gap-8 md:grid-cols-2 md:gap-10">
             {project.cover_image && (
-              <div className="shrink-0">
+              <div>
                 <Image
                   src={project.cover_image}
                   alt={project.title}
                   width={700}
                   height={500}
-                  sizes="(max-width: 768px) 100vw, 700px"
-                  className="h-auto w-auto max-w-full md:max-w-[700px]"
+                  sizes="(max-width: 768px) 100vw, 500px"
+                  className="h-auto w-full"
                 />
               </div>
             )}
 
             <div className="max-w-xs">
-              <h2 className="mb-4 text-lg font-medium">
+              <h2 className="mb-4 text-lg font-semibold">
                 {project.title}
               </h2>
 

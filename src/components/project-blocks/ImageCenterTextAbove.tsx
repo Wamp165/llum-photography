@@ -11,22 +11,20 @@ export default function ImageCenterTextAbove({
 }: Props) {
   return (
     <section className="my-24">
-      <div className="mx-auto mb-10 max-w-2xl">
-        <p className="whitespace-pre-line leading-8">
+      <div className="mx-auto mb-8 max-w-2xl">
+        <p className="whitespace-pre-line text-center text-sm leading-7">
           {text}
         </p>
       </div>
 
-      <div className="flex justify-center">
-        <Image
-          src={image}
-          alt=""
-          width={1800}
-          height={1200}
-          sizes="(max-width: 1400px) 100vw, 1400px"
-          className="h-auto max-h-[75vh] w-auto"
-        />
-      </div>
+      <Image
+        src={image}
+        alt=""
+        width={2000}
+        height={1333}
+        sizes="(max-width: 1100px) 100vw, 1020px"
+        className="h-auto max-h-[85vh] w-full object-contain"
+      />
     </section>
   );
 }

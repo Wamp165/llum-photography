@@ -5,7 +5,7 @@ export default async function Home() {
   const settings = await getSettings();
 
   return (
-    <div className="mx-auto mt-10 max-w-[1400px] px-8">
+    <div className="site-container">
       <h1 className="sr-only">{settings.photographer_name}</h1>
       <ImageCarousel
         images={settings.homepage_images ?? []}

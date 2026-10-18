@@ -11,17 +11,17 @@ export default function ImageLeftTextRight({
 }: Props) {
   return (
     <section className="my-24">
-      <div className="grid items-center gap-12 md:grid-cols-2">
+      <div className="grid items-center gap-10 md:grid-cols-2">
         <Image
           src={image}
           alt=""
           width={1200}
           height={1600}
-          sizes="(max-width: 768px) 100vw, 50vw"
+          sizes="(max-width: 768px) 100vw, 500px"
           className="h-auto w-full"
         />
 
-        <p className="whitespace-pre-line leading-8">
+        <p className="whitespace-pre-line px-4 text-center text-sm leading-7">
           {text}
         </p>
       </div>
