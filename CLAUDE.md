@@ -17,7 +17,9 @@ closed set on purpose. Add new ones only when asked, following the recipes below
   it uses `auth.api` / `auth.$context`.
 - **shadcn/ui only in the admin** (`src/components/ui`, `src/app/admin/admin.css`).
   The public site keeps its own editorial design (`src/app/(site)/globals.css`).
-- Images on **Cloudinary**, rendered with `next/image`. Admin uploads: next-cloudinary's signed widget.
+- Images on **Cloudinary**, rendered with `next/image` through a custom loader
+  (`src/lib/cloudinary-loader.ts`): Cloudinary resizes (`c_limit`, never crops), not our server.
+  Admin uploads: next-cloudinary's signed widget.
 - Next.js 16 differs from older versions. When unsure, read `node_modules/next/dist/docs/`
   (e.g. `proxy.ts` replaces `middleware.ts`; `next/image` uses `preload`, not `priority`).
 
