@@ -34,7 +34,7 @@ export default function LoginForm() {
       return;
     }
 
-    router.replace("/admin/projects");
+    router.replace("/admin/settings");
     router.refresh();
   }
 
