@@ -18,7 +18,7 @@ export const getSettings = cache(async (): Promise<Settings> => {
 
   if (!settings) {
     throw new Error(
-      "The settings table is empty: insert the row with id = 1 (see CLAUDE.md)."
+      "The settings row (id = 1) is missing: run `npm run db:migrate`."
     );
   }
 

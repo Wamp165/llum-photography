@@ -5,7 +5,7 @@ import { Pool, types, type CustomTypesConfig } from "pg";
 import { databaseSsl, env } from "@/lib/env";
 
 // Better Auth owns the tables user, session, account, verification and rateLimit
-// (created by db/migrations/005_better_auth.sql). Our code never queries them with
+// (created by db/migrations/001_initial_schema.sql). Our code never queries them with
 // SQL: it goes through `auth.api` / `auth.$context`.
 // Pages and Server Actions use src/lib/auth-guard.ts, not this file directly.
 
@@ -55,7 +55,7 @@ export const auth = betterAuth({
 
   session: {
     expiresIn: THIRTY_DAYS,
-    // Sliding expiration: refreshed at most once a day while she uses the admin.
+    // Sliding expiration: refreshed at most once a day while the admin is in use.
     updateAge: 60 * 60 * 24,
   },
 

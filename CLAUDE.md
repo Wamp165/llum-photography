@@ -60,6 +60,7 @@ src/
     api/auth/[...all]/ Better Auth HTTP handler.
     api/sign-cloudinary-params/  Signs admin uploads (admin only).
     global-not-found.tsx         404 for unmatched URLs (two root layouts → experimental.globalNotFound).
+    robots.ts                    robots.txt (disallows /admin and /api).
   components/
     ui/                shadcn/ui (generated; admin only).
     admin/             Admin building blocks: ActionForm, Field, ActionButton, ImageInput, ...
@@ -122,11 +123,12 @@ Reordering = swap `position` with the neighbour in a transaction after renumberi
 
 ## Database schema
 
-Source of truth: `db/migrations/`. Current state:
+Source of truth: `db/migrations/` (`001_initial_schema.sql` is the full schema; later changes
+go in new numbered files). Current state:
 
-- **`settings`** — exactly one row, `id = 1` (CHECK). Photographer name, bio, profile picture,
-  Instagram handle, contact email, `homepage_images` (JSONB array of URLs). `getSettings()` throws
-  if the row is missing.
+- **`settings`** — exactly one row, `id = 1` (CHECK), created by the first migration with a
+  placeholder name. Photographer name, bio, profile picture, Instagram handle, contact email,
+  `homepage_images` (JSONB array of URLs). `getSettings()` throws if the row is missing.
 - **`categories`** — sections in the menu. `slug` unique (some slugs are reserved, see constants),
   `position` 1..n, `layout` in `CATEGORY_LAYOUTS` (CHECK `categories_layout_check`).
 - **`projects`** — `category_id` NOT NULL, `ON DELETE RESTRICT` (a category with projects can't
@@ -141,8 +143,6 @@ Source of truth: `db/migrations/`. Current state:
 - **Better Auth**: `user`, `session`, `account` (password hash, `providerId = 'credential'`),
   `verification`, `rateLimit`. Never query them with SQL.
 - **`schema_migrations`** — managed by `scripts/migrate.mjs`.
-- Leftovers of an abandoned earlier auth attempt may exist locally (`admin_users`, `sessions`,
-  `login_attempts`): unused, safe to drop by hand.
 
 | Block type | content |
 | --- | --- |
@@ -227,7 +227,10 @@ Note: `npm install` of a package depending on `better-auth` may hit an npm bug (
 - In Supabase: **disable the Data API** and **enable RLS on every table without policies**. The
   direct connection as the table owner keeps working; nobody can reach the tables through Supabase's
   public API.
-- Set every variable of `.env.example` in Vercel; `BETTER_AUTH_URL` = the production URL.
+- Set every variable of `.env.example` in Vercel; `BETTER_AUTH_URL` = the production URL,
+  `BETTER_AUTH_TRUSTED_ORIGINS` empty.
+- `next.config.ts` adds security headers to every response and `src/app/robots.ts` keeps
+  `/admin` and `/api` out of search engines (the admin also sends `noindex`).
 
 ## Before considering a change done
 
