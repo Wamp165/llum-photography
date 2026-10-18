@@ -52,16 +52,24 @@ export default function ImageCarousel({
         </>
       )}
 
-      <div className="flex justify-center">
-        <Image
-          key={images[currentIndex]}
-          src={images[currentIndex]}
-          alt=""
-          width={1800}
-          height={1200}
-          priority
-          className="h-auto max-h-[75vh] w-auto"
-        />
+      <div className="relative h-[75vh] overflow-hidden">
+        {images.map((image, index) => (
+          <div
+            key={image}
+            className={`absolute inset-0 transition-opacity duration-300 ${
+              index === currentIndex ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <Image
+              src={image}
+              alt=""
+              fill
+              sizes="(max-width: 1400px) 100vw, 1400px"
+              priority={index <= 1}
+              className="object-contain"
+            />
+          </div>
+        ))}
       </div>
 
       {images.length > 1 && (
