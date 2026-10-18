@@ -1,8 +1,8 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getProjectsByCategory } from "@/data/projects";
-import Editorial from "@/components/category-layouts/Editorial";
 import { getCategoryBySlug } from "@/data/categories";
-import Grid from "@/components/category-layouts/Grid";
+import { getProjectsByCategory } from "@/data/projects";
+import { categoryLayouts } from "@/components/category-layouts";
 
 type Props = {
   params: Promise<{
@@ -10,39 +10,32 @@ type Props = {
   }>;
 };
 
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { categorySlug } = await params;
+  const category = await getCategoryBySlug(categorySlug);
+
+  return category ? { title: category.name } : {};
+}
+
 export default async function CategoryPage({
   params,
 }: Props) {
   const { categorySlug } = await params;
-  const category =
-    await getCategoryBySlug(categorySlug);
+  const category = await getCategoryBySlug(categorySlug);
 
-    if (!category) {
-        notFound();
-    }
-  const projects =
-    await getProjectsByCategory(categorySlug);
-
-  const layout = category.layout;
-  switch (layout) {
-    case "editorial":
-      return (
-        <main className="mx-auto max-w-6xl px-8">
-          <Editorial projects={projects} />
-        </main>
-      );
-
-    default:
-      return (
-        <main className="mx-auto max-w-6xl px-8">
-          <Editorial projects={projects} />
-        </main>
-      );
-      case "grid":
-      return (
-        <Grid
-          projects={projects}
-        />
-      );
+  if (!category) {
+    notFound();
   }
+
+  const projects = await getProjectsByCategory(categorySlug);
+  const Layout = categoryLayouts[category.layout];
+
+  return (
+    <div className="px-8">
+      <h1 className="sr-only">{category.name}</h1>
+      <Layout projects={projects} />
+    </div>
+  );
 }

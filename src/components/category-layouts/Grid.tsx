@@ -1,31 +1,29 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { ProjectListItem } from "@/types/project-list-item";
-
-type Props = {
-  projects: ProjectListItem[];
-};
+import type { CategoryLayoutProps } from "@/types/category-layout";
 
 export default function Grid({
   projects,
-}: Props) {
+}: CategoryLayoutProps) {
   return (
     <div className="mx-auto max-w-[1200px]">
-      <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid items-start gap-12 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
           <Link
             key={project.id}
             href={`/${project.category_slug}/${project.slug}`}
-            className="group"
+            className="block"
           >
-            <div className="relative aspect-[4/3] overflow-hidden">
+            {project.cover_image && (
               <Image
-                src={project.cover_image ?? ""}
+                src={project.cover_image}
                 alt={project.title}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                width={1200}
+                height={900}
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
+                className="h-auto w-full"
               />
-            </div>
+            )}
 
             <p className="mt-3 text-sm">
               {project.title}

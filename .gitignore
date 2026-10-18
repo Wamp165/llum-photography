@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# database backups (contain real data)
+/db/backups/
+
+# env files: keep the documented example
+!.env.example

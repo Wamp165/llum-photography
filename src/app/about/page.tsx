@@ -1,12 +1,17 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { getSettings } from "@/data/settings";
+
+export const metadata: Metadata = {
+  title: "About",
+};
 
 export default async function AboutPage() {
   const settings = await getSettings();
 
   return (
-    <main className="mx-auto max-w-[1400px] px-8">
-      <section className="mt-12 flex gap-20">
+    <div className="mx-auto max-w-[1400px] px-8">
+      <section className="mt-12 flex flex-col gap-12 md:flex-row md:gap-20">
         <div className="shrink-0">
           {settings.profile_picture && (
             <Image
@@ -14,7 +19,8 @@ export default async function AboutPage() {
               alt={settings.photographer_name}
               width={700}
               height={500}
-              className="h-auto w-auto max-w-[700px]"
+              sizes="(max-width: 768px) 100vw, 700px"
+              className="h-auto w-auto max-w-full md:max-w-[700px]"
             />
           )}
         </div>
@@ -67,6 +73,6 @@ export default async function AboutPage() {
           )}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

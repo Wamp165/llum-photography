@@ -23,6 +23,7 @@ export default function ImageCenterTextAbove({
           alt=""
           width={1800}
           height={1200}
+          sizes="(max-width: 1400px) 100vw, 1400px"
           className="h-auto max-h-[75vh] w-auto"
         />
       </div>
