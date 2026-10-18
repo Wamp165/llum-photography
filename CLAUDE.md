@@ -1,156 +1,239 @@
 # Llum Photography
 
-Private portfolio site + CMS for **one** photographer. One admin, no sign-up, no users.
+Portfolio site + private admin for **one** photographer. One admin account, no public sign-up.
 
-It is **not** a page builder or a generic CMS. The set of block types and category layouts is
-small and closed on purpose. Add new ones only when explicitly asked, following the recipes below.
+It is **not** a page builder or a generic CMS. Block types and category layouts are a small,
+closed set on purpose. Add new ones only when asked, following the recipes below.
 
-## Stack
+## Stack and decisions
 
-- Next.js 16 (App Router, Server Components), React 19, TypeScript (strict)
-- PostgreSQL via the `postgres` npm package (plain SQL)
-- Tailwind CSS 4
-- Images hosted on Cloudinary, rendered with `next/image`
-- Future deploy: Vercel + Supabase (used only as PostgreSQL: no Supabase SDK, no Supabase auth)
-
-Next.js 16 differs from older versions you may know. When unsure about an API, read the docs
-shipped in `node_modules/next/dist/docs/` (e.g. `next/image` uses `preload`, not `priority`).
+- **Next.js 16** (App Router, Server Components, Server Actions), React 19, TypeScript strict,
+  Tailwind CSS 4. **No separate backend**: everything runs in this one Next.js app (Vercel).
+- **PostgreSQL with the `postgres` package. No ORM, no query builder.** All SQL lives in `src/data/*`.
+- **Zod** validates every input: forms, block JSONB content, environment variables.
+- **Better Auth** for authentication (email + password, sessions in the database).
+  Exception to "SQL only in src/data": Better Auth manages its own tables (`user`, `session`,
+  `account`, `verification`, `rateLimit`) through its `pg` pool. Our code never queries them;
+  it uses `auth.api` / `auth.$context`.
+- **shadcn/ui only in the admin** (`src/components/ui`, `src/app/admin/admin.css`).
+  The public site keeps its own editorial design (`src/app/(site)/globals.css`).
+- Images on **Cloudinary**, rendered with `next/image` through a custom loader
+  (`src/lib/cloudinary-loader.ts`): Cloudinary resizes (`c_limit`, never crops), not our server.
+  Admin uploads: next-cloudinary's signed widget.
+- Next.js 16 differs from older versions. When unsure, read `node_modules/next/dist/docs/`
+  (e.g. `proxy.ts` replaces `middleware.ts`; `next/image` uses `preload`, not `priority`).
 
 ## Non-negotiable rules
 
-- **No ORM or query builder** (no Prisma, Drizzle, Kysely...). Only SQL with `postgres`.
-- **No new dependencies** unless the user explicitly asks.
-- **All SQL lives in `src/data/*`.** Never in pages or components.
-- **Types live in `src/types/*`.** Components only declare their own `Props`.
-- **Photos are never cropped.** No `object-cover`, no fixed `aspect-*` boxes that crop, no hover zoom.
-  Use `h-auto w-full` / `h-auto w-auto max-h-[..]`, or `fill` + `object-contain`.
-  The page adapts to the photograph, not the other way round.
-- **Never pass an empty `src` to `next/image`.** If an image is missing, don't render it.
-- Editorial, minimalist look. No flashy UI.
-- Only one `<main>` (in `src/app/layout.tsx`). Pages use `<div>`, `<section>` or `<article>`.
-- Comments in English, and only when they explain something non-obvious.
+1. **SQL only in `src/data/*`** (scripts and Better Auth's internals are the only exceptions).
+   `src/lib/db.ts` is imported only from `src/data/*`.
+2. **`await requireAdmin()` first thing in EVERY admin page and EVERY admin Server Action**
+   (and route handler: check `getCurrentAdmin()` and return 401). Server Actions are public HTTP
+   endpoints; `src/proxy.ts` only checks that a cookie exists and is **not** security.
+3. **Zod on every write**: `schema.safeParse(...)` in the Server Action before calling `src/data`.
+   Bound action arguments (ids, directions) come from the browser too: validate them.
+4. **Photos are never cropped**, anywhere (admin thumbnails included): no `object-cover`, no
+   fixed `aspect-*` box that crops, no hover zoom. Use `h-auto w-full`, `h-auto w-auto max-h-[..]`
+   or `fill` + `object-contain`. Never pass an empty `src` to `next/image`.
+5. **shadcn/ui only in the admin.** Never import `@/components/ui/*` from public pages/components.
+6. **Every schema change is a numbered `.sql` migration** in `db/migrations/` (Better Auth's tables
+   included). Never use Better Auth's own `migrate` command.
+7. Closed values (`CATEGORY_LAYOUTS`, `BLOCK_TYPES`) live in `src/lib/constants.ts`; the SQL CHECK
+   constraints must list exactly the same values (`npm run test:smoke` verifies it).
+8. Types for database rows are hand-written in `src/types/*`; block types are inferred from Zod.
+   Components only declare their own `Props`.
+9. One `<main>` per page. Comments in English and only when they explain something non-obvious.
+10. No new dependencies unless the user asks.
 
-## Architecture
+## Folder map
 
 ```
-UI (src/app, src/components)  ->  src/data/*  ->  src/lib/db.ts  ->  PostgreSQL
+src/
+  app/
+    (site)/            Public site. Its own root layout (<html>, globals.css, Navbar, <main>).
+    admin/             Admin. Its own root layout (<html>, admin.css with shadcn, Toaster).
+      login/           Login page (signs in through Better Auth's HTTP API).
+      (panel)/         Everything behind login: layout with nav + requireAdmin().
+        settings/ categories/ projects/ projects/[id]/
+                       page.tsx (Server Component) + actions.ts (Server Actions) + client forms.
+      actions.ts       Logout.
+    api/auth/[...all]/ Better Auth HTTP handler.
+    api/sign-cloudinary-params/  Signs admin uploads (admin only).
+    global-not-found.tsx         404 for unmatched URLs (two root layouts → experimental.globalNotFound).
+  components/
+    ui/                shadcn/ui (generated; admin only).
+    admin/             Admin building blocks: ActionForm, Field, ActionButton, ImageInput, ...
+    admin/block-forms/ One form per block type + the typed `blockForms` map.
+    admin/blocks/      Block editor list (BlockListItem, AddBlock, BlockEditor, BlockSummary).
+    project-blocks/    Public block components + BlockRenderer.
+    category-layouts/  Public list layouts + the `categoryLayouts` map.
+  data/                The only place with SQL. Reads and writes per entity.
+  lib/
+    env.ts             Environment variables (Zod). Imported at startup by src/instrumentation.ts.
+    db.ts              The `postgres` connection (server-only, globalThis singleton).
+    auth.ts            Better Auth config.     auth-client.ts  Browser client (login form).
+    auth-guard.ts      getCurrentAdmin() / requireAdmin().
+    constants.ts       CATEGORY_LAYOUTS, BLOCK_TYPES, ... (source of truth).
+    schemas/           Zod schemas: common, project-block, settings, category, project.
+    slugify.ts  revalidate.ts  format-date.ts  utils.ts (shadcn `cn`)
+  types/               Row types and shared types.
+  proxy.ts             Optimistic redirect of /admin/* without a session cookie.
+db/migrations/         NNN_description.sql, applied by scripts/migrate.mjs.
+scripts/               migrate.mjs, create-admin.ts, auth-schema.ts, smoke-test.ts.
 ```
 
-| Path | Contents |
-| --- | --- |
-| `src/app/` | Routes. Server Components that call `src/data/*` and render components. |
-| `src/components/` | Presentational components. No SQL, no data fetching. |
-| `src/components/project-blocks/` | One component per block type + `BlockRenderer.tsx`. |
-| `src/components/category-layouts/` | One component per category layout + `index.ts` map. |
-| `src/data/` | The only place with SQL. One file per table/area. |
-| `src/lib/db.ts` | The single `sql` connection pool (`server-only`). |
-| `src/lib/project-blocks.ts` | Validation of block `content` (pure TypeScript). |
-| `src/lib/images.ts` | Allowed image URL check (must match `next.config.ts`). |
-| `src/types/` | Shared types. |
-| `db/migrations/` | Numbered SQL migrations. |
-| `scripts/migrate.mjs` | Migration runner. |
+## Authentication
 
-Every page is rendered per request (`await connection()` in `src/app/layout.tsx`), so database
-changes show up immediately. Don't remove it.
+- Better Auth, email + password, `disableSignUp: true`. The only account is created with
+  `npm run admin:create` (uses `auth.$context.internalAdapter`, the same calls as Better Auth's
+  sign-up). Every account is the admin.
+- Sessions are stored in the `session` table; the cookie is managed by Better Auth
+  (`better-auth.session_token`, httpOnly). 30 days, refreshed daily while in use.
+- **Login goes through the HTTP API** (`authClient.signIn.email` in `LoginForm.tsx`), not a Server
+  Action: Better Auth's rate limiting only runs on HTTP requests. Limit: 5 sign-in attempts per IP
+  per minute (stored in the `rateLimit` table, so it works across serverless instances).
+- `nextCookies()` lets `auth.api` calls from Server Actions (logout, session refresh) set cookies.
+- `src/lib/auth-guard.ts`: `getCurrentAdmin()` (cached per request) and `requireAdmin()`.
+- **Pending: 2FA** with Better Auth's `twoFactor` plugin: add it to `plugins` in `src/lib/auth.ts`
+  (before `nextCookies()`), run `npm run auth:schema`, save the SQL as a new migration, apply it,
+  and add the verification step to the login page.
 
-Routes: `/` (home carousel), `/about`, `/[categorySlug]` (project list), `/[categorySlug]/[projectSlug]`.
+## Server Action pattern
+
+```ts
+"use server";
+export async function saveThing(thingId: number, _state: ActionState, formData: FormData): Promise<ActionResult> {
+  await requireAdmin();                                            // 1. auth
+  const id = positiveId.safeParse(thingId);                        // 2. validate (Zod)
+  const input = thingFormSchema.safeParse(Object.fromEntries(formData));
+  if (!id.success) return { ok: false, error: "Invalid thing." };
+  if (!input.success) return { ok: false, error: "Please fix the highlighted fields.", fieldErrors: fieldErrorsOf(input.error) };
+  try { await updateThing(id.data, input.data); }                  // 3. src/data
+  catch (error) { if (isUniqueViolation(error)) return { ok: false, error: "...", fieldErrors: { slug: "..." } }; throw error; }
+  revalidateSite();                                                // 4. revalidate
+  return { ok: true };                                             // 5. result
+}
+```
+
+Client side: `<ActionForm action={saveThing.bind(null, id)}>` with `<Field name="...">` inside
+(errors per field, disabled button while saving, "Saved" toast). Single buttons (move, delete,
+publish) use `<ActionButton>`; destructive ones pass `confirm={...}` (shadcn AlertDialog).
+Reordering = swap `position` with the neighbour in a transaction after renumbering 1..n.
 
 ## Database schema
 
-Source of truth: `db/migrations/` (applied in order). Current state:
+Source of truth: `db/migrations/`. Current state:
 
-- **`settings`** — exactly one row with `id = 1` (CHECK `settings_single_row`). Photographer name,
-  bio, profile picture, Instagram handle, contact email, `homepage_images` (JSONB array of URLs).
-  `getSettings()` throws if the row is missing.
-- **`categories`** — top-level sections shown in the navbar. `slug` is unique, `position` orders them.
-  `layout` chooses how the project list is rendered: `editorial | grid | masonry | featured`
-  (CHECK `categories_layout_check`).
-- **`projects`** — belongs to one category (`category_id NOT NULL`, `ON DELETE RESTRICT`: a category
-  with projects cannot be deleted). `slug` is unique across all projects. `position` orders projects
-  inside a category. Optional `description` (list), `introduction` (project page), `cover_image`,
-  `project_date` (DATE, read as a `"YYYY-MM-DD"` string).
-- **`project_blocks`** — ordered content blocks of a project (`ON DELETE CASCADE` with the project).
-  `type` is one of the block types (CHECK `project_blocks_type_check`), `content` is a JSONB object
-  whose shape depends on `type`, `position > 0`.
-- **`schema_migrations`** — managed by the migration runner. Don't touch.
+- **`settings`** — exactly one row, `id = 1` (CHECK). Photographer name, bio, profile picture,
+  Instagram handle, contact email, `homepage_images` (JSONB array of URLs). `getSettings()` throws
+  if the row is missing.
+- **`categories`** — sections in the menu. `slug` unique (some slugs are reserved, see constants),
+  `position` 1..n, `layout` in `CATEGORY_LAYOUTS` (CHECK `categories_layout_check`).
+- **`projects`** — `category_id` NOT NULL, `ON DELETE RESTRICT` (a category with projects can't
+  be deleted). `slug` unique across all projects. `position` 1..n inside its category.
+  `is_published` (public pages only show `true`; drafts are visible to the logged-in admin with a
+  "Draft — not public" strip). `description` (list), `introduction` (project page), `cover_image`,
+  `project_date` (DATE, read as `"YYYY-MM-DD"`), `created_at`, `updated_at`.
+- **`project_blocks`** — ordered blocks of a project, `ON DELETE CASCADE`. `type` in `BLOCK_TYPES`
+  (CHECK `project_blocks_type_check`), `content` JSONB object validated by
+  `src/lib/schemas/project-block.ts`, `position` 1..n. Invalid rows are skipped on the public site
+  (with `console.error`) and flagged in the admin.
+- **Better Auth**: `user`, `session`, `account` (password hash, `providerId = 'credential'`),
+  `verification`, `rateLimit`. Never query them with SQL.
+- **`schema_migrations`** — managed by `scripts/migrate.mjs`.
+- Leftovers of an abandoned earlier auth attempt may exist locally (`admin_users`, `sessions`,
+  `login_attempts`): unused, safe to drop by hand.
 
-Block types and their `content`:
-
-| type | content |
+| Block type | content |
 | --- | --- |
-| `only_text_center` | `{ text: string }` |
-| `image_gallery` | `{ images: string[] }` — side by side, rows of 3 (intended 1–3 images) |
-| `carousel` | `{ images: string[] }` — any number; 1 image shows without arrows |
-| `image_left_text_right`, `image_right_text_left`, `image_center_text_above`, `image_center_text_below` | `{ image: string; text: string }` |
+| `only_text_center` | `{ text }` |
+| `image_gallery` | `{ images }` — 1 to 3 when saving (side by side; older rows with more show in rows of 3) |
+| `carousel` | `{ images }` — 1 or more (one image shows without arrows) |
+| `image_left_text_right`, `image_right_text_left`, `image_center_text_above`, `image_center_text_below` | `{ image, text }` |
 
-All image URLs must start with `https://res.cloudinary.com/`. Invalid blocks are skipped at read
-time with a `console.error`, so one bad row never breaks a page.
+Image URLs must be `https://res.cloudinary.com/...` (`cloudinaryImageUrl` in `schemas/common.ts`,
+same host as `images.remotePatterns` in `next.config.ts`).
 
-## Migrations
+## Recipes
 
-1. Create `db/migrations/NNN_short_description.sql` with the next number (e.g. `004_add_x.sql`).
-2. Write plain SQL. It runs inside one transaction; if anything fails, nothing is applied.
-   Prefer idempotent statements (`IF NOT EXISTS`, `DROP CONSTRAINT IF EXISTS` before `ADD`).
-3. Before adding a constraint, check existing data does not violate it. If data would be lost,
-   stop and ask.
-4. Run `npm run db:migrate`.
-5. Update the types in `src/types/*` and the schema section of this file.
+### Create and apply a migration
+1. Add `db/migrations/NNN_short_description.sql` with the next number. Plain SQL, runs in one
+   transaction. Prefer idempotent statements (`IF NOT EXISTS`, `DROP CONSTRAINT IF EXISTS` + `ADD`).
+2. Before adding a constraint, check the existing data. If data would be lost, stop and ask.
+3. `npm run db:migrate`. Never edit an applied migration (tracked by file name): add a new one.
+4. Update `src/types/*` and the schema section above.
+5. Test on an empty database too: `npm run test:smoke` applies every migration to a throwaway DB.
 
-Never edit a migration that has already been applied: create a new one. The runner tracks
-migrations by file name only.
+### Add an editable field to an entity (example: `projects.location`)
+1. Migration: `ALTER TABLE projects ADD COLUMN IF NOT EXISTS location TEXT;` → `npm run db:migrate`.
+2. Type: add `location: string | null` to `Project` in `src/types/project.ts`.
+3. Data: add the column to the SELECTs and the UPDATE in `src/data/projects.ts`.
+4. Validation: add `location: optionalText("Location", 200)` to `projectFormSchema`
+   (`src/lib/schemas/project.ts`); `ProjectInput` updates itself.
+5. Form: add `<Field label="Location" name="location">{(id) => <Input id={id} name="location"
+   defaultValue={project.location ?? ""} />}</Field>` to `ProjectForm.tsx`.
+6. Show it on the public page if needed. Run the checks below.
 
-## Recipe: add a project block type
+### Add a block type (example: `quote` with `{ text, author }`)
+1. `src/lib/constants.ts`: add `"quote"` to `BLOCK_TYPES`.
+2. Migration: drop and re-add `project_blocks_type_check` with the new list → `npm run db:migrate`.
+3. Zod: add `z.object({ type: z.literal("quote"), content: z.object({ text, author: ... }) })` to the
+   union in `src/lib/schemas/project-block.ts` (a compile-time check fails until you do).
+4. Public component: `src/components/project-blocks/Quote.tsx` (decides its own width/spacing),
+   then a `case "quote":` in `BlockRenderer.tsx` (the `never` check fails until you do).
+5. Admin form: `src/components/admin/block-forms/QuoteBlockFields.tsx` (inputs + hidden
+   `content` JSON), registered in `blockForms` in `block-forms/index.tsx` (compile error until you
+   do), and a `case` in `components/admin/blocks/BlockSummary.tsx`.
+6. Update the block table above. `npx tsc --noEmit` and `npm run test:smoke`.
 
-Example: `quote` with `{ text: string; author: string }`.
+### Add a category layout (example: `list`)
+1. `src/lib/constants.ts`: add `"list"` to `CATEGORY_LAYOUTS`.
+2. Migration: drop and re-add `categories_layout_check` with the new list → `npm run db:migrate`.
+3. `src/components/category-layouts/List.tsx` receiving `CategoryLayoutProps` (no cropping; skip
+   the image when `cover_image` is null), registered in `category-layouts/index.ts`.
+4. Add its label to `LAYOUT_LABELS` in `src/app/admin/(panel)/categories/CategoryForm.tsx`.
+5. `npx tsc --noEmit` and `npm run test:smoke`.
 
-1. **Type** — in `src/types/project-block.ts`, add the content type and a member to
-   `ProjectBlockData`: `| { type: "quote"; content: QuoteContent }`.
-2. **Validation** — in `src/lib/project-blocks.ts`, add a `validateQuoteContent` function and a
-   `quote` entry in `validators` (TypeScript errors until you do).
-3. **Component** — create `src/components/project-blocks/Quote.tsx`. It decides its own width
-   (e.g. `mx-auto max-w-2xl`) and vertical spacing (`my-16` / `my-24`).
-4. **Renderer** — add `case "quote":` to `BlockRenderer.tsx` (the `never` check errors until you do).
-   No `as` casts: `block.content` is already typed by the `case`.
-5. **Migration** — new migration that drops and re-adds `project_blocks_type_check` with the new
-   value (copy the list from `002_block_type_check.sql`). Run `npm run db:migrate`.
-6. Update the block table in this file.
+## Environment variables
 
-## Recipe: add a category layout
-
-Example: `list`.
-
-1. Add `"list"` to `CategoryLayout` in `src/types/category-layout.ts`.
-2. Create `src/components/category-layouts/List.tsx` receiving `CategoryLayoutProps`.
-   Follow the no-cropping rules; skip the image when `cover_image` is null.
-3. Add `list: List` to `categoryLayouts` in `src/components/category-layouts/index.ts`
-   (TypeScript errors until you do).
-4. Migration that drops and re-adds `categories_layout_check` including `'list'`.
-   Run `npm run db:migrate`.
-5. Update the schema section of this file.
-
-## Environment
-
-Copy `.env.example` to `.env.local`. Variables: `DATABASE_URL`, `DATABASE_SSL`
-(defaults to `disable` for localhost, `require` otherwise), `DATABASE_PREPARE`
-(`false` for Supabase's transaction pooler).
+See `.env.example` (validated by `src/lib/env.ts`, the server fails to start with a clear message):
+`DATABASE_URL`, `DATABASE_SSL`, `DATABASE_PREPARE`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`,
+`BETTER_AUTH_TRUSTED_ORIGINS`, and optionally `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`,
+`NEXT_PUBLIC_CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` (all three, or uploads are disabled).
 
 ## Commands
 
 ```bash
-npm run dev          # dev server on http://localhost:3000
-npm run build        # production build
-npm run start        # serve the production build
-npm run lint         # ESLint
-npx tsc --noEmit     # type check
-npm run db:migrate   # apply pending migrations
+npm run dev           # dev server, http://localhost:3000
+npm run build         # production build
+npm run start         # serve the build
+npm run lint          # ESLint
+npx tsc --noEmit      # type check
+npm run db:migrate    # apply pending migrations
+npm run admin:create  # create/update the admin account (interactive, or ADMIN_EMAIL/ADMIN_PASSWORD)
+npm run auth:schema   # print the SQL Better Auth is missing (after changing its config/plugins)
+npm run test:smoke    # checks on a throwaway local database (CHECKs vs constants, Zod, data layer)
 ```
+
+Note: `npm install` of a package depending on `better-auth` may hit an npm bug ("edgesOut"); use
+`--legacy-peer-deps` for that install (its peer deps are all optional).
+
+## Deploying (Vercel + Supabase)
+
+- Use Supabase only as PostgreSQL. `DATABASE_URL` = the **transaction pooler** (port 6543) with
+  `DATABASE_PREPARE=false`; SSL defaults to `require`.
+- Run `npm run db:migrate` against Supabase (from your machine, with its `DATABASE_URL`), then
+  `npm run admin:create`.
+- In Supabase: **disable the Data API** and **enable RLS on every table without policies**. The
+  direct connection as the table owner keeps working; nobody can reach the tables through Supabase's
+  public API.
+- Set every variable of `.env.example` in Vercel; `BETTER_AUTH_URL` = the production URL.
 
 ## Before considering a change done
 
-1. `npx tsc --noEmit`, `npm run lint` and `npm run build` pass with no errors.
-2. Start the server and check with curl that `/`, `/about`, every category and at least one project
-   return 200, and that a non-existent category/project returns 404.
-3. For schema changes: test the migration on an empty database first
-   (`CREATE DATABASE llum_migrate_test`, run with `DATABASE_URL` pointing to it, then drop it),
-   and verify new constraints inside `BEGIN; ... ROLLBACK;`.
-4. Visually: no cropped photos, layout works at mobile width.
+1. `npx tsc --noEmit`, `npm run lint` and `npm run build` pass.
+2. `npm run test:smoke` passes.
+3. With the server running: `/`, `/about`, every category and published project return 200; a
+   draft and an unknown slug return 404; `/admin` without a session redirects to `/admin/login`.
+4. Every new Server Action starts with `await requireAdmin()`; no SQL outside `src/data/*`.
+5. Visually: no cropped photos, works at phone width (admin included).

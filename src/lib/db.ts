@@ -1,5 +1,6 @@
 import "server-only";
 import postgres from "postgres";
+import { databaseSsl, env } from "@/lib/env";
 
 type Sql = ReturnType<typeof postgres>;
 
@@ -8,41 +9,14 @@ declare global {
   var __llumSql: Sql | undefined;
 }
 
-const LOCAL_HOSTS = ["localhost", "127.0.0.1", "::1", "[::1]"];
-
-function sslOption(url: string): false | "require" | "prefer" | "verify-full" {
-  const value =
-    process.env.DATABASE_SSL ||
-    (LOCAL_HOSTS.includes(new URL(url).hostname) ? "disable" : "require");
-
-  switch (value) {
-    case "disable":
-      return false;
-    case "require":
-    case "prefer":
-    case "verify-full":
-      return value;
-    default:
-      throw new Error(
-        `Invalid DATABASE_SSL "${value}" (use disable, require, prefer or verify-full)`
-      );
-  }
-}
-
 function createSql(): Sql {
-  const url = process.env.DATABASE_URL;
-  if (!url) {
-    throw new Error(
-      "DATABASE_URL is not set. See .env.example."
-    );
-  }
-
-  return postgres(url, {
-    ssl: sslOption(url),
+  return postgres(env.DATABASE_URL, {
+    ssl: databaseSsl(),
     // Supabase's transaction-mode pooler does not support prepared statements.
-    prepare: process.env.DATABASE_PREPARE !== "false",
+    prepare: env.DATABASE_PREPARE !== "false",
   });
 }
 
+/** The only database connection of the app. Use it only from src/data/*. */
 export const sql: Sql = globalThis.__llumSql ?? createSql();
 globalThis.__llumSql = sql;
