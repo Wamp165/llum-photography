@@ -1,35 +1,25 @@
-export type TextContent = {
-  text: string;
-};
+import type { z } from "zod";
+import type { BLOCK_TYPES } from "@/lib/constants";
+import type { storedProjectBlockSchema } from "@/lib/schemas/project-block";
 
-export type ImagesContent = {
-  images: string[];
-};
+export type BlockType = (typeof BLOCK_TYPES)[number];
 
-export type ImageTextContent = {
-  image: string;
-  text: string;
-};
+/** `type` + `content` of a block (discriminated union, inferred from the Zod schema). */
+export type ProjectBlockData = z.infer<typeof storedProjectBlockSchema>;
 
-// Must match the project_blocks_type_check constraint in the database.
-export type ProjectBlockData =
-  | { type: "only_text_center"; content: TextContent }
-  | { type: "image_gallery"; content: ImagesContent }
-  | { type: "carousel"; content: ImagesContent }
-  | { type: "image_left_text_right"; content: ImageTextContent }
-  | { type: "image_right_text_left"; content: ImageTextContent }
-  | { type: "image_center_text_above"; content: ImageTextContent }
-  | { type: "image_center_text_below"; content: ImageTextContent };
+export type ProjectBlockContent<T extends BlockType> = Extract<
+  ProjectBlockData,
+  { type: T }
+>["content"];
 
+/** A validated block, ready to render. */
 export type ProjectBlock = {
   id: number;
   project_id: number;
   position: number;
 } & ProjectBlockData;
 
-export type ProjectBlockType = ProjectBlock["type"];
-
-// Raw row from project_blocks, before validation.
+/** Raw row of project_blocks, before validation. */
 export type ProjectBlockRow = {
   id: number;
   project_id: number;
@@ -37,3 +27,11 @@ export type ProjectBlockRow = {
   type: string;
   content: unknown;
 };
+
+/** Admin view: invalid rows are kept so they can be seen and deleted. */
+export type AdminProjectBlock =
+  | { valid: true; block: ProjectBlock }
+  | { valid: false; row: ProjectBlockRow; error: string };
+
+/** Content shared by the four "image + text" block types. */
+export type ImageTextContent = ProjectBlockContent<"image_left_text_right">;

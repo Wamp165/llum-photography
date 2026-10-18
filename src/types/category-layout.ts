@@ -1,12 +1,9 @@
+import type { CATEGORY_LAYOUTS } from "@/lib/constants";
 import type { ProjectListItem } from "./project-list-item";
 
-// Must match the categories_layout_check constraint in the database.
-export type CategoryLayout =
-  | "editorial"
-  | "grid"
-  | "masonry"
-  | "featured";
+export type CategoryLayout = (typeof CATEGORY_LAYOUTS)[number];
 
+/** Props that every component in src/components/category-layouts/ receives. */
 export type CategoryLayoutProps = {
   projects: ProjectListItem[];
 };
