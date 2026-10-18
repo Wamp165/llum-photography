@@ -1,0 +1,41 @@
+name: Claude
+
+# Runs Claude Code when:
+# - an issue gets the "claude" label (the Telegram bot adds it when it opens the issue)
+# - someone with write access mentions @claude in an issue or PR comment
+on:
+  issues:
+    types: [labeled]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  claude:
+    # Only start a runner when there is actually something for Claude to do
+    if: |
+      (github.event_name == 'issues' && github.event.label.name == 'claude') ||
+      (github.event_name != 'issues' && contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # One run at a time per issue/PR
+    concurrency:
+      group: claude-${{ github.event.issue.number || github.event.pull_request.number }}
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          # Uses your Claude Pro subscription (token from `claude setup-token`)
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          label_trigger: "claude"
+          claude_args: "--max-turns 30"
