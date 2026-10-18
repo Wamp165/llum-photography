@@ -16,28 +16,35 @@ export default function ImageCarousel({
   preload = false,
 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  // Images already shown stay mounted so going back never reloads them.
+  const [visited, setVisited] = useState<ReadonlySet<number>>(
+    () => new Set([0])
+  );
 
   if (images.length === 0) {
     return null;
   }
 
   const hasMany = images.length > 1;
+  const count = images.length;
 
-  const previous = () => {
-    setCurrentIndex((current) =>
-      current === 0
-        ? images.length - 1
-        : current - 1
+  const goTo = (index: number) => {
+    setCurrentIndex(index);
+    setVisited((current) =>
+      current.has(index) ? current : new Set(current).add(index)
     );
   };
 
-  const next = () => {
-    setCurrentIndex((current) =>
-      current === images.length - 1
-        ? 0
-        : current + 1
-    );
-  };
+  const previous = () => goTo(currentIndex === 0 ? count - 1 : currentIndex - 1);
+  const next = () => goTo(currentIndex === count - 1 ? 0 : currentIndex + 1);
+
+  // Opacity-hidden images still download, so only the current one, its
+  // neighbours (ready for the next click) and visited ones are rendered.
+  const isMounted = (index: number) =>
+    visited.has(index) ||
+    index === currentIndex ||
+    index === (currentIndex + 1) % count ||
+    index === (currentIndex - 1 + count) % count;
 
   return (
     <div className="relative">
@@ -63,9 +70,9 @@ export default function ImageCarousel({
         </>
       )}
 
-      {/* All images share one grid cell, so the box takes the tallest one's height. */}
+      {/* Mounted images share one grid cell, so the box takes the tallest one's height. */}
       <div className={`grid ${hasMany ? "mx-10 xl:mx-0" : ""}`}>
-        {images.map((image, index) => (
+        {images.map((image, index) => isMounted(index) && (
           <Image
             key={`${index}-${image}`}
             src={image}
@@ -88,7 +95,7 @@ export default function ImageCarousel({
             <button
               key={`${index}-${image}`}
               type="button"
-              onClick={() => setCurrentIndex(index)}
+              onClick={() => goTo(index)}
               aria-label={`Show image ${index + 1} of ${images.length}`}
               aria-current={index === currentIndex}
               className={`h-2 w-2 rounded-full transition ${
