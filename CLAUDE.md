@@ -50,6 +50,9 @@ UI (src/app, src/components)  ->  src/data/*  ->  src/lib/db.ts  ->  PostgreSQL
 | `db/migrations/` | Numbered SQL migrations. |
 | `scripts/migrate.mjs` | Migration runner. |
 
+Every page is rendered per request (`await connection()` in `src/app/layout.tsx`), so database
+changes show up immediately. Don't remove it.
+
 Routes: `/` (home carousel), `/about`, `/[categorySlug]` (project list), `/[categorySlug]/[projectSlug]`.
 
 ## Database schema
@@ -135,7 +138,7 @@ Copy `.env.example` to `.env.local`. Variables: `DATABASE_URL`, `DATABASE_SSL`
 
 ```bash
 npm run dev          # dev server on http://localhost:3000
-npm run build        # production build (needs the database: / and /about are prerendered)
+npm run build        # production build
 npm run start        # serve the production build
 npm run lint         # ESLint
 npx tsc --noEmit     # type check

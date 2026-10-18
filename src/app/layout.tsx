@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { getSettings } from "@/data/settings";
@@ -33,6 +34,9 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Render every page per request so database changes show up without a rebuild.
+  await connection();
+
   const [settings, categories] =
     await Promise.all([
       getSettings(),
