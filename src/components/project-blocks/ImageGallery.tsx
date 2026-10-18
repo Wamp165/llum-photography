@@ -18,14 +18,14 @@ export default function ImageGallery({
 
   if (images.length === 1) {
     return (
-      <section className="my-16 flex justify-center">
+      <section className="my-24">
         <Image
           src={images[0]}
           alt=""
-          width={1800}
-          height={1200}
-          sizes="(max-width: 1400px) 100vw, 1400px"
-          className="h-auto max-h-[75vh] w-auto"
+          width={2000}
+          height={1333}
+          sizes="(max-width: 1100px) 100vw, 1020px"
+          className="h-auto max-h-[85vh] w-full object-contain"
         />
       </section>
     );
@@ -34,12 +34,12 @@ export default function ImageGallery({
   const columns = images.length === 2 ? COLUMNS[2] : COLUMNS[3];
   const imageSizes =
     images.length === 2
-      ? "(max-width: 768px) 100vw, 50vw"
-      : "(max-width: 768px) 100vw, 33vw";
+      ? "(max-width: 768px) 100vw, 500px"
+      : "(max-width: 768px) 100vw, 330px";
 
   return (
     <section
-      className={`my-16 grid grid-cols-1 items-start gap-8 ${columns}`}
+      className={`my-24 grid grid-cols-1 items-start gap-6 ${columns}`}
     >
       {images.map((image, index) => (
         <Image

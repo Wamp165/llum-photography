@@ -42,28 +42,26 @@ export default async function ProjectPage({
   const blocks = await getProjectBlocks(project.id);
 
   return (
-    <article className="mx-auto max-w-[1400px] px-8 pb-24">
+    <article className="site-container pb-24">
       {project.cover_image && (
-        <div className="mt-12 flex justify-center">
-          <Image
-            src={project.cover_image}
-            alt={project.title}
-            width={1800}
-            height={1200}
-            sizes="(max-width: 1400px) 100vw, 1400px"
-            preload
-            className="h-auto max-h-[75vh] w-auto"
-          />
-        </div>
+        <Image
+          src={project.cover_image}
+          alt={project.title}
+          width={2000}
+          height={1333}
+          sizes="(max-width: 1100px) 100vw, 1020px"
+          preload
+          className="h-auto max-h-[85vh] w-full object-contain"
+        />
       )}
 
-      <header className="mx-auto mt-8 max-w-3xl">
-        <h1 className="mb-2 text-xl font-medium">
+      <header className="mt-10">
+        <h1 className="mb-2 text-xl font-semibold">
           {project.title}
         </h1>
 
         {project.project_date && (
-          <p className="mb-8 text-sm text-neutral-500">
+          <p className="mb-8 text-sm text-neutral-400">
             <time dateTime={project.project_date}>
               {formatProjectDate(project.project_date)}
             </time>

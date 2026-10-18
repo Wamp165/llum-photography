@@ -13,22 +13,20 @@ export default function Featured({
   }
 
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div>
       <Link
         href={projectHref(featured)}
         className="block"
       >
         {featured.cover_image && (
-          <div className="flex justify-center">
-            <Image
-              src={featured.cover_image}
-              alt={featured.title}
-              width={1800}
-              height={1200}
-              sizes="(max-width: 1200px) 100vw, 1200px"
-              className="h-auto max-h-[80vh] w-auto"
-            />
-          </div>
+          <Image
+            src={featured.cover_image}
+            alt={featured.title}
+            width={2000}
+            height={1333}
+            sizes="(max-width: 1100px) 100vw, 1020px"
+            className="h-auto max-h-[85vh] w-full object-contain"
+          />
         )}
 
         <div className="mx-auto mt-6 max-w-xl text-center">

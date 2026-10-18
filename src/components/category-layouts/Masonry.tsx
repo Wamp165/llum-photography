@@ -6,7 +6,7 @@ export default function Masonry({
   projects,
 }: CategoryLayoutProps) {
   return (
-    <div className="mx-auto max-w-[1200px] columns-1 gap-12 md:columns-2 lg:columns-3">
+    <div className="columns-1 gap-12 md:columns-2 lg:columns-3">
       {projects.map((project) => (
         <Link
           key={project.id}

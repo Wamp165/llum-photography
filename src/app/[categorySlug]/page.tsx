@@ -33,7 +33,7 @@ export default async function CategoryPage({
   const Layout = categoryLayouts[category.layout];
 
   return (
-    <div className="px-8">
+    <div className="site-container">
       <h1 className="sr-only">{category.name}</h1>
       <Layout projects={projects} />
     </div>

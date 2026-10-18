@@ -6,7 +6,7 @@ export default function Grid({
   projects,
 }: CategoryLayoutProps) {
   return (
-    <div className="mx-auto max-w-[1200px]">
+    <div>
       <div className="grid items-start gap-12 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
           <Link

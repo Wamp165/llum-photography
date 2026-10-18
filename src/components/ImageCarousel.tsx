@@ -9,7 +9,7 @@ type ImageCarouselProps = {
 };
 
 const ARROW_CLASSES =
-  "absolute top-1/2 z-10 -translate-y-1/2 px-2 text-6xl font-extralight text-neutral-300 transition-colors duration-200 hover:text-neutral-500";
+  "absolute top-1/2 z-10 -translate-y-1/2 px-2 text-6xl font-extralight text-neutral-400 transition-colors duration-200 hover:text-neutral-800";
 
 export default function ImageCarousel({
   images,
@@ -47,7 +47,7 @@ export default function ImageCarousel({
             type="button"
             onClick={previous}
             aria-label="Previous image"
-            className={`${ARROW_CLASSES} left-0 2xl:-left-16`}
+            className={`${ARROW_CLASSES} left-0 xl:-left-16`}
           >
             ‹
           </button>
@@ -56,35 +56,29 @@ export default function ImageCarousel({
             type="button"
             onClick={next}
             aria-label="Next image"
-            className={`${ARROW_CLASSES} right-0 2xl:-right-16`}
+            className={`${ARROW_CLASSES} right-0 xl:-right-16`}
           >
             ›
           </button>
         </>
       )}
 
-      <div
-        className={`relative h-[60vh] overflow-hidden md:h-[75vh] ${
-          hasMany ? "mx-10 2xl:mx-0" : ""
-        }`}
-      >
+      {/* All images share one grid cell, so the box takes the tallest one's height. */}
+      <div className={`grid ${hasMany ? "mx-10 xl:mx-0" : ""}`}>
         {images.map((image, index) => (
-          <div
+          <Image
             key={`${index}-${image}`}
+            src={image}
+            alt=""
+            width={2000}
+            height={1333}
+            sizes="(max-width: 1100px) 100vw, 1020px"
+            preload={preload && index === 0}
             aria-hidden={index !== currentIndex}
-            className={`absolute inset-0 transition-opacity duration-300 ${
-              index === currentIndex ? "opacity-100" : "opacity-0"
+            className={`col-start-1 row-start-1 h-auto max-h-[80vh] w-full self-center object-contain transition-opacity duration-300 ${
+              index === currentIndex ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
-          >
-            <Image
-              src={image}
-              alt=""
-              fill
-              sizes="(max-width: 1400px) 100vw, 1400px"
-              preload={preload && index === 0}
-              className="object-contain"
-            />
-          </div>
+          />
         ))}
       </div>
 

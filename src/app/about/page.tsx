@@ -10,68 +10,68 @@ export default async function AboutPage() {
   const settings = await getSettings();
 
   return (
-    <div className="mx-auto max-w-[1400px] px-8">
-      <section className="mt-12 flex flex-col gap-12 md:flex-row md:gap-20">
-        <div className="shrink-0">
-          {settings.profile_picture && (
-            <Image
-              src={settings.profile_picture}
-              alt={settings.photographer_name}
-              width={700}
-              height={500}
-              sizes="(max-width: 768px) 100vw, 700px"
-              className="h-auto w-auto max-w-full md:max-w-[700px]"
-            />
-          )}
-        </div>
+    <div className="site-container pb-24">
+      <section className="grid items-start gap-10 md:grid-cols-2 md:gap-16">
+        {settings.profile_picture && (
+          <Image
+            src={settings.profile_picture}
+            alt={settings.photographer_name}
+            width={1200}
+            height={800}
+            sizes="(max-width: 768px) 100vw, 500px"
+            preload
+            className="h-auto w-full"
+          />
+        )}
 
-        <div className="max-w-md">
-          <h1 className="mb-8 text-sm font-medium uppercase tracking-wide">
-            About Me
+        <div>
+          <h1 className="mb-6 text-center font-semibold">
+            About me
           </h1>
 
           {settings.bio && (
-            <p className="leading-8 text-neutral-700">
+            <p className="whitespace-pre-line break-words leading-7">
               {settings.bio}
             </p>
           )}
         </div>
       </section>
 
-      <hr className="my-20 border-neutral-200" />
+      <hr className="mx-auto my-16 w-1/2 border-neutral-800" />
 
-      <section className="mx-auto max-w-sm space-y-12 text-center">
-        <div>
-          <h2 className="mb-2 text-sm font-medium">
-            Find me on:
-          </h2>
+      <section className="space-y-8 text-center text-sm">
+        {settings.instagram && (
+          <div>
+            <h2 className="mb-2 text-base font-semibold">
+              Find me on:
+            </h2>
 
-          {settings.instagram && (
             <a
               href={`https://instagram.com/${settings.instagram}`}
               target="_blank"
               rel="noreferrer"
-              className="underline"
+              className="hover:underline"
             >
-              Instagram: {settings.instagram}
+              <span className="font-semibold text-neutral-500">Instagram:</span>{" "}
+              {settings.instagram}
             </a>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div>
-          <h2 className="mb-2 text-sm font-medium">
-            Email me:
-          </h2>
+        {settings.contact_email && (
+          <div>
+            <h2 className="mb-2 text-base font-semibold">
+              Email me:
+            </h2>
 
-          {settings.contact_email && (
             <a
               href={`mailto:${settings.contact_email}`}
-              className="underline"
+              className="hover:underline"
             >
               {settings.contact_email}
             </a>
-          )}
-        </div>
+          </div>
+        )}
       </section>
     </div>
   );

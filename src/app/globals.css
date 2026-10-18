@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 :root {
+  /* Opts out of the browser's automatic dark mode. */
+  color-scheme: only light;
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -8,19 +10,29 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-open-sans), Arial, Helvetica, sans-serif;
+  --font-display: var(--font-montserrat), Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {
+  /* Reserve the scrollbar's space so short and long pages line up. */
+  scrollbar-gutter: stable;
+}
+
+/* The one content column of the public site: the navbar and every page share its edges. */
+@utility site-container {
+  width: 100%;
+  max-width: 1100px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2.5rem;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
