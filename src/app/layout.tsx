@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { getSettings } from "@/data/settings";
@@ -16,16 +17,26 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Llum Photography",
-  description: "Photography portfolio",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+
+  return {
+    title: {
+      default: settings.photographer_name,
+      template: `%s | ${settings.photographer_name}`,
+    },
+    description: `Photography portfolio of ${settings.photographer_name}`,
+  };
+}
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Render every page per request so database changes show up without a rebuild.
+  await connection();
+
   const [settings, categories] =
     await Promise.all([
       getSettings(),

@@ -1,34 +1,31 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { ProjectListItem } from "@/types/project-list-item";
-
-type Props = {
-  projects: ProjectListItem[];
-};
+import type { CategoryLayoutProps } from "@/types/category-layout";
 
 export default function Editorial({
   projects,
-}: Props) {
+}: CategoryLayoutProps) {
   return (
-    <div>
+    <div className="mx-auto max-w-6xl">
       {projects.map((project) => (
         <Link
           key={project.id}
           href={`/${project.category_slug}/${project.slug}`}
           className="block border-b border-neutral-200 py-16"
         >
-          <article className="flex gap-12">
-            <div className="shrink-0">
-              {project.cover_image && (
+          <article className="flex flex-col gap-8 md:flex-row md:gap-12">
+            {project.cover_image && (
+              <div className="shrink-0">
                 <Image
                   src={project.cover_image}
                   alt={project.title}
                   width={700}
                   height={500}
-                  className="h-auto w-auto max-w-[700px]"
+                  sizes="(max-width: 768px) 100vw, 700px"
+                  className="h-auto w-auto max-w-full md:max-w-[700px]"
                 />
-              )}
-            </div>
+              </div>
+            )}
 
             <div className="max-w-xs">
               <h2 className="mb-4 text-lg font-medium">

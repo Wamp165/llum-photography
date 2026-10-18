@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getProjectBySlug } from "@/data/projects";
 import { getProjectBlocks } from "@/data/project-blocks";
+import { formatProjectDate } from "@/lib/format-date";
 import BlockRenderer from "@/components/project-blocks/BlockRenderer";
 
 type Props = {
@@ -11,18 +13,27 @@ type Props = {
   }>;
 };
 
+export async function generateMetadata({
+  params,
+}: Props): Promise<Metadata> {
+  const { categorySlug, projectSlug } = await params;
+  const project = await getProjectBySlug(categorySlug, projectSlug);
+
+  if (!project) {
+    return {};
+  }
+
+  return {
+    title: project.title,
+    description: project.description ?? undefined,
+  };
+}
+
 export default async function ProjectPage({
   params,
 }: Props) {
-  const {
-    categorySlug,
-    projectSlug,
-  } = await params;
-
-  const project = await getProjectBySlug(
-    categorySlug,
-    projectSlug
-  );
+  const { categorySlug, projectSlug } = await params;
+  const project = await getProjectBySlug(categorySlug, projectSlug);
 
   if (!project) {
     notFound();
@@ -31,7 +42,7 @@ export default async function ProjectPage({
   const blocks = await getProjectBlocks(project.id);
 
   return (
-    <main className="mx-auto max-w-[1400px] px-8">
+    <article className="mx-auto max-w-[1400px] px-8 pb-24">
       {project.cover_image && (
         <div className="mt-12 flex justify-center">
           <Image
@@ -39,22 +50,23 @@ export default async function ProjectPage({
             alt={project.title}
             width={1800}
             height={1200}
-            priority
+            sizes="(max-width: 1400px) 100vw, 1400px"
+            preload
             className="h-auto max-h-[75vh] w-auto"
           />
         </div>
       )}
 
-      <section className="mx-auto mt-8 max-w-3xl">
+      <header className="mx-auto mt-8 max-w-3xl">
         <h1 className="mb-2 text-xl font-medium">
           {project.title}
         </h1>
 
         {project.project_date && (
           <p className="mb-8 text-sm text-neutral-500">
-            {new Date(
-              project.project_date
-            ).toLocaleDateString()}
+            <time dateTime={project.project_date}>
+              {formatProjectDate(project.project_date)}
+            </time>
           </p>
         )}
 
@@ -63,13 +75,14 @@ export default async function ProjectPage({
             {project.introduction}
           </p>
         )}
-        {blocks.map((block) => (
-          <BlockRenderer
-            key={block.id}
-            block={block}
-          />
-        ))}
-      </section>
-    </main>
+      </header>
+
+      {blocks.map((block) => (
+        <BlockRenderer
+          key={block.id}
+          block={block}
+        />
+      ))}
+    </article>
   );
 }

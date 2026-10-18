@@ -1,5 +1,4 @@
 import type { ProjectBlock } from "@/types/project-block";
-import type { ImageBlockContent, TextBlockContent, ImageTextBlockContent} from "@/types/project-block-content";
 import ImageGallery from "./ImageGallery";
 import OnlyTextCenter from "./OnlyTextCenter";
 import ImageCarousel from "@/components/ImageCarousel";
@@ -16,88 +15,55 @@ export default function BlockRenderer({
   block,
 }: Props) {
   switch (block.type) {
-    case "image_gallery": {
-      const content =
-        block.content as ImageBlockContent;
+    case "only_text_center":
+      return <OnlyTextCenter text={block.content.text} />;
 
+    case "image_gallery":
+      return <ImageGallery images={block.content.images} />;
+
+    case "carousel":
       return (
-        <ImageGallery
-          images={content.images}
-        />
+        <section className="my-24">
+          <ImageCarousel images={block.content.images} />
+        </section>
       );
-    }
 
-    case "only_text_center": {
-      const content =
-        block.content as TextBlockContent;
-
-      return (
-        <OnlyTextCenter
-          text={content.text}
-        />
-      );
-    }
-
-    case "carousel": {
-        const content =
-            block.content as ImageBlockContent;
-
-        return (
-            <ImageCarousel
-            images={content.images}
-            />
-        );
-    }
-
-    case "image_center_text_above": {
-      const content =
-        block.content as ImageTextBlockContent;
-
-      return (
-        <ImageCenterTextAbove
-          image={content.image}
-          text={content.text}
-        />
-      );
-    }
-
-    case "image_center_text_below": {
-      const content =
-        block.content as ImageTextBlockContent;
-
-      return (
-        <ImageCenterTextBelow
-          image={content.image}
-          text={content.text}
-        />
-      );
-    }
-
-    case "image_left_text_right": {
-      const content =
-        block.content as ImageTextBlockContent;
-
+    case "image_left_text_right":
       return (
         <ImageLeftTextRight
-          image={content.image}
-          text={content.text}
+          image={block.content.image}
+          text={block.content.text}
         />
       );
-    }
 
-    case "image_right_text_left": {
-      const content =
-        block.content as ImageTextBlockContent;
-
+    case "image_right_text_left":
       return (
         <ImageRightTextLeft
-          image={content.image}
-          text={content.text}
+          image={block.content.image}
+          text={block.content.text}
         />
       );
-    }
 
-    default:
-      return null;
+    case "image_center_text_above":
+      return (
+        <ImageCenterTextAbove
+          image={block.content.image}
+          text={block.content.text}
+        />
+      );
+
+    case "image_center_text_below":
+      return (
+        <ImageCenterTextBelow
+          image={block.content.image}
+          text={block.content.text}
+        />
+      );
+
+    default: {
+      // A compile error here means a block type is missing its `case`.
+      const _exhaustive: never = block;
+      return _exhaustive;
+    }
   }
 }
