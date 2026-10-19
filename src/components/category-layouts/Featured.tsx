@@ -30,7 +30,7 @@ export default function Featured({
         )}
 
         <div className="mx-auto mt-6 max-w-xl text-center">
-          <h2 className="text-lg font-medium">
+          <h2 className="font-display text-2xl font-medium">
             {featured.title}
           </h2>
 

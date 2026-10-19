@@ -28,7 +28,7 @@ export default function Editorial({
             )}
 
             <div className="max-w-xs">
-              <h2 className="mb-4 text-lg font-semibold">
+              <h2 className="mb-4 font-display text-2xl font-semibold">
                 {project.title}
               </h2>
 
