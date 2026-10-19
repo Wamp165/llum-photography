@@ -12,6 +12,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-open-sans), Arial, Helvetica, sans-serif;
   --font-display: var(--font-cormorant), Georgia, "Times New Roman", serif;
+  --font-logo: var(--font-montserrat), Arial, Helvetica, sans-serif;
 }
 
 html {
