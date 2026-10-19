@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
-import { Montserrat, Open_Sans } from "next/font/google";
+import { Cormorant_Garamond, Open_Sans } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { getSettings } from "@/data/settings";
 import { getCategories } from "@/data/categories";
@@ -12,9 +12,11 @@ const openSans = Open_Sans({
   subsets: ["latin", "latin-ext"],
 });
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
+// Editorial serif for the navbar and category/project titles.
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin", "latin-ext"],
+  weight: ["400", "500", "600"],
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -46,7 +48,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${openSans.variable} ${montserrat.variable} h-full antialiased`}
+      className={`${openSans.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Navbar
