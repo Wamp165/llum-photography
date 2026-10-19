@@ -24,7 +24,7 @@ export default function Navbar({
       <nav className="relative flex flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
         <Link
           href="/"
-          className="max-w-[min(17rem,calc(100%-6rem))] md:max-w-[17rem]text-balance border-b border-neutral-800 pb-3 text-center font-display text-2xl font-normal uppercase leading-snug tracking-[0.3em]"
+          className="max-w-[min(17rem,calc(100%-6rem))] md:max-w-[17rem] text-balance border-b border-neutral-800 pb-3 text-center font-logo text-2xl font-normal uppercase leading-snug tracking-[0.3em]"
         >
           {photographerName}
         </Link>
