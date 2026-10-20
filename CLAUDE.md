@@ -240,6 +240,8 @@ Node 22, npm cache, 15 min timeout, one run per branch: `cancel-in-progress: tru
 
 - Use Supabase only as PostgreSQL. `DATABASE_URL` = the **transaction pooler** (port 6543) with
   `DATABASE_PREPARE=false`; SSL defaults to `require`.
+- Pools are small per serverless instance: `postgres` max 3 (`src/lib/db.ts`) and Better Auth's
+  `pg` Pool max 2 (`src/lib/auth.ts`), both closing idle connections; constants at the top of each file.
 - Run `npm run db:migrate` against Supabase (from your machine, with its `DATABASE_URL`), then
   `npm run admin:create`.
 - In Supabase: **disable the Data API** and **enable RLS on every table without policies**. The
