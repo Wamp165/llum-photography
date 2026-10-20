@@ -1,22 +1,27 @@
 import { cache } from "react";
 import type { TransactionSql } from "postgres";
 import { sql } from "@/lib/db";
+import { cachedSiteRead } from "@/lib/site-cache";
 import type {
   Category,
   CategoryInput,
   CategoryWithProjectCount,
 } from "@/types/category";
 
-export async function getCategories(): Promise<Category[]> {
-  return await sql<Category[]>`
-    SELECT id, name, slug, position, layout
-    FROM categories
-    ORDER BY position ASC, id ASC
-  `;
-}
+// --- Public reads (cached, see cachedSiteRead) --------------------------------
+
+export const getCategories = cache(
+  cachedSiteRead("categories", async (): Promise<Category[]> => {
+    return await sql<Category[]>`
+      SELECT id, name, slug, position, layout
+      FROM categories
+      ORDER BY position ASC, id ASC
+    `;
+  })
+);
 
 export const getCategoryBySlug = cache(
-  async (slug: string): Promise<Category | null> => {
+  cachedSiteRead("category-by-slug", async (slug: string): Promise<Category | null> => {
     const categories = await sql<Category[]>`
       SELECT id, name, slug, position, layout
       FROM categories
@@ -25,7 +30,7 @@ export const getCategoryBySlug = cache(
     `;
 
     return categories[0] ?? null;
-  }
+  })
 );
 
 /** For the admin: every category with its number of projects (drafts included). */

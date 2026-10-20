@@ -22,23 +22,26 @@ function parseRow(row: ProjectBlockRow) {
   return storedProjectBlockSchema.safeParse({ type: row.type, content: row.content });
 }
 
-// Invalid blocks are skipped (and logged) so they never break the page.
-export async function getProjectBlocks(projectId: number): Promise<ProjectBlock[]> {
-  const blocks: ProjectBlock[] = [];
+// Invalid blocks are skipped (and logged) so they never break the page. Cached with cachedSiteRead.
+export const getProjectBlocks = cachedSiteRead(
+  "project-blocks",
+  async (projectId: number): Promise<ProjectBlock[]> => {
+    const blocks: ProjectBlock[] = [];
 
-  for (const row of await getBlockRows(projectId)) {
-    const result = parseRow(row);
-    if (!result.success) {
-      console.error(
-        `Skipping project_blocks id=${row.id}: ${z.prettifyError(result.error)}`
-      );
-      continue;
+    for (const row of await getBlockRows(projectId)) {
+      const result = parseRow(row);
+      if (!result.success) {
+        console.error(
+          `Skipping project_blocks id=${row.id}: ${z.prettifyError(result.error)}`
+        );
+        continue;
+      }
+      blocks.push({ id: row.id, project_id: row.project_id, position: row.position, ...result.data });
     }
-    blocks.push({ id: row.id, project_id: row.project_id, position: row.position, ...result.data });
-  }
 
-  return blocks;
-}
+    return blocks;
+  }
+);
 
 /** Every block of a project for the admin, including invalid ones (flagged). */
 export async function getAdminProjectBlocks(projectId: number): Promise<AdminProjectBlock[]> {

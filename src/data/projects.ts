@@ -1,6 +1,7 @@
 import { cache } from "react";
 import type { TransactionSql } from "postgres";
 import { sql } from "@/lib/db";
+import { cachedSiteRead } from "@/lib/site-cache";
 import { slugify } from "@/lib/slugify";
 import type { AdminProjectListItem, ProjectInput } from "@/types/project";
 import type { ProjectListItem } from "@/types/project-list-item";
@@ -10,27 +11,31 @@ import type { ProjectListItem } from "@/types/project-list-item";
 
 // --- Public reads: only published projects ----------------------------------
 
-export async function getProjectsByCategory(
-  categorySlug: string
-): Promise<ProjectListItem[]> {
-  return await sql<ProjectListItem[]>`
-    SELECT
-      p.id, p.category_id, p.title, p.slug, p.description, p.position,
-      p.introduction, p.cover_image,
-      to_char(p.project_date, 'YYYY-MM-DD') AS project_date,
-      p.is_published,
-      c.slug AS category_slug
-    FROM projects p
-    INNER JOIN categories c ON c.id = p.category_id
-    WHERE c.slug = ${categorySlug}
-      AND p.is_published = true
-    ORDER BY p.position ASC, p.id ASC
-  `;
-}
+// Cached with cachedSiteRead; `includeDrafts` is part of the cache key, so a draft cached
+// for the admin is never served to visitors.
+
+export const getProjectsByCategory = cachedSiteRead(
+  "projects-by-category",
+  async (categorySlug: string): Promise<ProjectListItem[]> => {
+    return await sql<ProjectListItem[]>`
+      SELECT
+        p.id, p.category_id, p.title, p.slug, p.description, p.position,
+        p.introduction, p.cover_image,
+        to_char(p.project_date, 'YYYY-MM-DD') AS project_date,
+        p.is_published,
+        c.slug AS category_slug
+      FROM projects p
+      INNER JOIN categories c ON c.id = p.category_id
+      WHERE c.slug = ${categorySlug}
+        AND p.is_published = true
+      ORDER BY p.position ASC, p.id ASC
+    `;
+  }
+);
 
 /** Drafts are only returned when `includeDrafts` is true (logged-in admin previewing). */
 export const getProjectBySlug = cache(
-  async (
+  cachedSiteRead("project-by-slug", async (
     categorySlug: string,
     projectSlug: string,
     includeDrafts: boolean
@@ -50,7 +55,7 @@ export const getProjectBySlug = cache(
       LIMIT 1
     `;
     return project ?? null;
-  }
+  })
 );
 
 // --- Admin reads -------------------------------------------------------------

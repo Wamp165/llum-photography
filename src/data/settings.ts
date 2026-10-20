@@ -1,8 +1,9 @@
 import { cache } from "react";
 import { sql } from "@/lib/db";
+import { cachedSiteRead } from "@/lib/site-cache";
 import type { Settings, SettingsInput } from "@/types/settings";
 
-export const getSettings = cache(async (): Promise<Settings> => {
+export const getSettings = cache(cachedSiteRead("settings", async (): Promise<Settings> => {
   const [settings] = await sql<Settings[]>`
     SELECT
       id,
@@ -23,7 +24,7 @@ export const getSettings = cache(async (): Promise<Settings> => {
   }
 
   return settings;
-});
+}));
 
 export async function updateSettings(input: SettingsInput): Promise<void> {
   await sql`
