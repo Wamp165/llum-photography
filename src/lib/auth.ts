@@ -24,12 +24,20 @@ const authTypes: CustomTypesConfig = {
       : types.getTypeParser(oid, format)) as CustomTypesConfig["getTypeParser"],
 };
 
+// Kept low on purpose: every serverless instance opens its own pool against Supabase's
+// transaction pooler, which has a small connection limit.
+const POOL_MAX_CONNECTIONS = 2;
+const POOL_IDLE_TIMEOUT_MS = 10_000;
+const POOL_CONNECT_TIMEOUT_MS = 10_000;
+
 function createPool(): Pool {
   const ssl = databaseSsl();
   return new Pool({
     connectionString: env.DATABASE_URL,
     ssl: ssl === false ? false : { rejectUnauthorized: ssl === "verify-full" },
-    max: 5,
+    max: POOL_MAX_CONNECTIONS,
+    idleTimeoutMillis: POOL_IDLE_TIMEOUT_MS,
+    connectionTimeoutMillis: POOL_CONNECT_TIMEOUT_MS,
     types: authTypes,
   });
 }
