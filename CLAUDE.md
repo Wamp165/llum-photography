@@ -218,6 +218,24 @@ npm run test:smoke    # checks on a throwaway local database (CHECKs vs constant
 Note: `npm install` of a package depending on `better-auth` may hit an npm bug ("edgesOut"); use
 `--legacy-peer-deps` for that install (its peer deps are all optional).
 
+## CI
+
+`.github/workflows/ci.yml` runs on every pull request and every push to `main` (`ubuntu-latest`,
+Node 22, npm cache, 15 min timeout, one run per branch: `cancel-in-progress: true`).
+
+- A `postgres:16` service container with a healthcheck. `DATABASE_URL` points to it
+  (`localhost:5432`); CI never gets production or Supabase credentials or any secret.
+- Test env vars are set in the workflow (`BETTER_AUTH_SECRET` is a fixed throwaway value,
+  `BETTER_AUTH_URL=http://localhost:3000`, Cloudinary empty: uploads are optional in `env.ts`).
+- Steps, in order, each visible on its own: `npm ci`, `npm run db:migrate`, `npm run db:seed:ci`
+  (`scripts/seed-ci.ts`: settings, a category, a published project with a block, fake data,
+  `https://res.cloudinary.com/demo/...` URLs), `npx tsc --noEmit`, `npm run lint`,
+  `npm run build`, `npm run test:smoke`.
+- The npm scripts use `--env-file-if-exists=.env.local`, so they work without that file.
+- Keep the seed valid when schemas change (it goes through `src/data/*`). Any new env var required
+  by `src/lib/env.ts` must also be added to the workflow. Don't add secrets or remote databases to CI.
+- To reproduce locally: empty local database, same env vars, then run the steps above in order.
+
 ## Deploying (Vercel + Supabase)
 
 - Use Supabase only as PostgreSQL. `DATABASE_URL` = the **transaction pooler** (port 6543) with
