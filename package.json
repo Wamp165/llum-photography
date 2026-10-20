@@ -7,10 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "db:migrate": "node --env-file=.env.local scripts/migrate.mjs",
-    "auth:schema": "tsx --conditions=react-server --env-file=.env.local scripts/auth-schema.ts",
-    "admin:create": "tsx --conditions=react-server --env-file=.env.local scripts/create-admin.ts",
-    "test:smoke": "tsx --conditions=react-server --env-file=.env.local scripts/smoke-test.ts"
+    "db:migrate": "node --env-file-if-exists=.env.local scripts/migrate.mjs",
+    "db:seed:ci": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/seed-ci.ts",
+    "auth:schema": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/auth-schema.ts",
+    "admin:create": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/create-admin.ts",
+    "test:smoke": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/smoke-test.ts"
   },
   "dependencies": {
     "better-auth": "^1.7.10",
