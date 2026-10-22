@@ -1,6 +1,7 @@
 import type { TransactionSql } from "postgres";
 import { z } from "zod";
 import { sql } from "@/lib/db";
+import { cachedSiteRead } from "@/lib/site-cache";
 import { storedProjectBlockSchema } from "@/lib/schemas/project-block";
 import type {
   AdminProjectBlock,
