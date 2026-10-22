@@ -194,6 +194,20 @@ same host as `images.remotePatterns` in `next.config.ts`).
 4. Add its label to `LAYOUT_LABELS` in `src/app/admin/(panel)/categories/CategoryForm.tsx`.
 5. `npx tsc --noEmit` and `npm run test:smoke`.
 
+## Caching
+
+- Public reads in `src/data/*` are wrapped with `cachedSiteRead()` (`src/lib/site-cache.ts`, Next's
+  data cache): `getSettings`, `getCategories`, `getCategoryBySlug`, `getProjectsByCategory`,
+  `getProjectBySlug`, `getProjectBlocks`. All share the tag `SITE_CACHE_TAG` and revalidate every
+  hour as a fallback for changes made outside the admin. Pages are still rendered per request
+  (`await connection()` in the site layout); only the data is cached.
+- **Admin reads are never cached** (`getAdminProjects`, `getProjectById`, `getAdminProjectBlocks`,
+  `getCategoriesWithProjectCount`), nor `getCurrentAdmin()`: they are per user.
+- **Every admin write must call `revalidateSite()`**, which expires the shared tag immediately.
+- A new public read in `src/data/*` must use `cachedSiteRead()` with a unique key prefix. Arguments
+  are part of the key (`includeDrafts` keeps drafts away from visitors) and results must be plain JSON data.
+- Outside Next (smoke test, seed scripts) `cachedSiteRead()` reads the database directly.
+
 ## Environment variables
 
 See `.env.example` (validated by `src/lib/env.ts`, the server fails to start with a clear message):
