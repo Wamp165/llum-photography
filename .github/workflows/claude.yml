@@ -38,4 +38,4 @@ jobs:
           # Uses your Claude Pro subscription (token from `claude setup-token`)
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           label_trigger: "claude"
-          claude_args: "--max-turns 30"
+          claude_args: '--max-turns 30 --allowedTools "Bash(npm install),Bash(npm ci),Bash(npm run *)"'
