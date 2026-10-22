@@ -54,9 +54,6 @@ Admin → Settings.
 4. **Check**: the site loads, `/admin` redirects to the login page, you can sign in and
    upload an image.
 
-Secrets live only in `.env.local` (git-ignored) and in Vercel's settings; nothing secret is
-committed to the repository.
-
 ## Commands
 
 | Command | What it does |
