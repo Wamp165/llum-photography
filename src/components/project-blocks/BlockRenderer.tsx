@@ -9,22 +9,24 @@ import ImageRightTextLeft from "./ImageRightTextLeft";
 
 type Props = {
   block: ProjectBlock;
+  projectTitle: string;
 };
 
 export default function BlockRenderer({
   block,
+  projectTitle,
 }: Props) {
   switch (block.type) {
     case "only_text_center":
       return <OnlyTextCenter text={block.content.text} />;
 
     case "image_gallery":
-      return <ImageGallery images={block.content.images} />;
+      return <ImageGallery images={block.content.images} projectTitle={projectTitle} />;
 
     case "carousel":
       return (
         <section className="my-24">
-          <ImageCarousel images={block.content.images} />
+          <ImageCarousel images={block.content.images} altLabel={projectTitle} />
         </section>
       );
 
@@ -32,6 +34,7 @@ export default function BlockRenderer({
       return (
         <ImageLeftTextRight
           image={block.content.image}
+          alt={projectTitle}
           text={block.content.text}
         />
       );
@@ -40,6 +43,7 @@ export default function BlockRenderer({
       return (
         <ImageRightTextLeft
           image={block.content.image}
+          alt={projectTitle}
           text={block.content.text}
         />
       );
@@ -48,6 +52,7 @@ export default function BlockRenderer({
       return (
         <ImageCenterTextAbove
           image={block.content.image}
+          alt={projectTitle}
           text={block.content.text}
         />
       );
@@ -56,6 +61,7 @@ export default function BlockRenderer({
       return (
         <ImageCenterTextBelow
           image={block.content.image}
+          alt={projectTitle}
           text={block.content.text}
         />
       );

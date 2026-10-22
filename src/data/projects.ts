@@ -3,7 +3,7 @@ import type { TransactionSql } from "postgres";
 import { sql } from "@/lib/db";
 import { cachedSiteRead } from "@/lib/site-cache";
 import { slugify } from "@/lib/slugify";
-import type { AdminProjectListItem, ProjectInput } from "@/types/project";
+import type { AdminProjectListItem, ProjectInput, SitemapProject } from "@/types/project";
 import type { ProjectListItem } from "@/types/project-list-item";
 
 // project_date is selected as a "YYYY-MM-DD" string so it does not depend
@@ -29,6 +29,23 @@ export const getProjectsByCategory = cachedSiteRead(
       WHERE c.slug = ${categorySlug}
         AND p.is_published = true
       ORDER BY p.position ASC, p.id ASC
+    `;
+  }
+);
+
+/** Published projects only, for sitemap.xml. */
+export const getPublishedProjectsForSitemap = cachedSiteRead(
+  "published-projects-for-sitemap",
+  async (): Promise<SitemapProject[]> => {
+    return await sql<SitemapProject[]>`
+      SELECT
+        p.slug,
+        c.slug AS category_slug,
+        to_char(p.updated_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS updated_at
+      FROM projects p
+      INNER JOIN categories c ON c.id = p.category_id
+      WHERE p.is_published = true
+      ORDER BY c.position ASC, c.id ASC, p.position ASC, p.id ASC
     `;
   }
 );

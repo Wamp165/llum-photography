@@ -2,11 +2,13 @@ import Image from "next/image";
 
 type Props = {
   image: string;
+  alt: string;
   text: string;
 };
 
 export default function ImageCenterTextAbove({
   image,
+  alt,
   text,
 }: Props) {
   return (
@@ -19,7 +21,7 @@ export default function ImageCenterTextAbove({
 
       <Image
         src={image}
-        alt=""
+        alt={alt}
         width={2000}
         height={1333}
         sizes="(max-width: 1100px) 100vw, 1020px"

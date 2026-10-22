@@ -1,10 +1,23 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getSettings } from "@/data/settings";
+import { excerpt, socialMetadata } from "@/lib/social-metadata";
 
-export const metadata: Metadata = {
-  title: "About",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSettings();
+  const description = settings.bio ? excerpt(settings.bio) : undefined;
+
+  return {
+    title: "About",
+    description,
+    ...socialMetadata({
+      siteName: settings.photographer_name,
+      title: `About | ${settings.photographer_name}`,
+      description,
+      image: settings.profile_picture,
+    }),
+  };
+}
 
 export default async function AboutPage() {
   const settings = await getSettings();

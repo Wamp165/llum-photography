@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCategoryBySlug } from "@/data/categories";
 import { getProjectsByCategory } from "@/data/projects";
+import { getSettings } from "@/data/settings";
+import { socialMetadata } from "@/lib/social-metadata";
 import { categoryLayouts } from "@/components/category-layouts";
 
 type Props = {
@@ -16,7 +18,21 @@ export async function generateMetadata({
   const { categorySlug } = await params;
   const category = await getCategoryBySlug(categorySlug);
 
-  return category ? { title: category.name } : {};
+  if (!category) return {};
+
+  const [settings, projects] = await Promise.all([
+    getSettings(),
+    getProjectsByCategory(categorySlug), // published only: drafts never reach metadata
+  ]);
+
+  return {
+    title: category.name,
+    ...socialMetadata({
+      siteName: settings.photographer_name,
+      title: category.name,
+      image: projects.find((project) => project.cover_image)?.cover_image,
+    }),
+  };
 }
 
 export default async function CategoryPage({

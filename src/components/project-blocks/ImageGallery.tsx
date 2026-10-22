@@ -2,6 +2,7 @@ import Image from "next/image";
 
 type Props = {
   images: string[];
+  projectTitle: string;
 };
 
 const COLUMNS = {
@@ -11,6 +12,7 @@ const COLUMNS = {
 
 export default function ImageGallery({
   images,
+  projectTitle,
 }: Props) {
   if (images.length === 0) {
     return null;
@@ -21,7 +23,7 @@ export default function ImageGallery({
       <section className="my-24">
         <Image
           src={images[0]}
-          alt=""
+          alt={`${projectTitle} — photograph 1`}
           width={2000}
           height={1333}
           sizes="(max-width: 1100px) 100vw, 1020px"
@@ -45,7 +47,7 @@ export default function ImageGallery({
         <Image
           key={`${index}-${image}`}
           src={image}
-          alt=""
+          alt={`${projectTitle} — photograph ${index + 1}`}
           width={1200}
           height={1600}
           sizes={imageSizes}

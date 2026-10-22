@@ -9,6 +9,8 @@ export default async function Home() {
       <h1 className="sr-only">{settings.photographer_name}</h1>
       <ImageCarousel
         images={settings.homepage_images ?? []}
+        altLabel={settings.photographer_name}
+        showTotal
         preload
       />
     </div>
