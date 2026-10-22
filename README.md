@@ -57,14 +57,6 @@ Admin → Settings.
 Secrets live only in `.env.local` (git-ignored) and in Vercel's settings; nothing secret is
 committed to the repository.
 
-## Typography
-
-The public site loads two fonts with `next/font/google` (self-hosted by Next.js, no layout shift)
-in `src/app/(site)/layout.tsx`: Open Sans for body text (`font-sans`) and Cormorant Garamond for
-the navbar and category/project titles (`font-display`). Both are mapped to Tailwind tokens in
-`src/app/(site)/globals.css`; to swap the display font, change the import in the layout and
-`--font-display` there.
-
 ## Commands
 
 | Command | What it does |
