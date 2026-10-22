@@ -25,6 +25,9 @@ const nextConfig: NextConfig = {
     // Cloudinary resizes the images (src/lib/cloudinary-loader.ts), not this server.
     loader: "custom",
     loaderFile: "./src/lib/cloudinary-loader.ts",
+    // Fewer width variants means fewer Cloudinary transformations and better CDN cache hits.
+    deviceSizes: [640, 828, 1080, 1366, 1600, 2048], // widest public image ~1020px, 2x screens covered
+    imageSizes: [96, 192, 384], // admin thumbnails 80px & 160px at 1x and 2x
     // Still the only allowed image host: URLs are validated against it (schemas/common.ts).
     remotePatterns: [
       {
