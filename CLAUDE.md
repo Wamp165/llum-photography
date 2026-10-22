@@ -198,7 +198,7 @@ same host as `images.remotePatterns` in `next.config.ts`).
 
 - Public reads in `src/data/*` are wrapped with `cachedSiteRead()` (`src/lib/site-cache.ts`, Next's
   data cache): `getSettings`, `getCategories`, `getCategoryBySlug`, `getProjectsByCategory`,
-  `getProjectBySlug`, `getProjectBlocks`. All share the tag `SITE_CACHE_TAG` and revalidate every
+  `getProjectBySlug`, `getProjectBlocks`, `getPublishedProjectsForSitemap` (feeds `src/app/sitemap.ts`). All share the tag `SITE_CACHE_TAG` and revalidate every
   hour as a fallback for changes made outside the admin. Pages are still rendered per request
   (`await connection()` in the site layout); only the data is cached.
 - **Admin reads are never cached** (`getAdminProjects`, `getProjectById`, `getAdminProjectBlocks`,

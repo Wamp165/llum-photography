@@ -6,6 +6,9 @@ import Image from "next/image";
 type ImageCarouselProps = {
   images: string[];
   preload?: boolean;
+  /** Alt text is "<altLabel> — photograph <n>" (plus " of <total>" with `showTotal`). */
+  altLabel: string;
+  showTotal?: boolean;
 };
 
 const ARROW_CLASSES =
@@ -14,6 +17,8 @@ const ARROW_CLASSES =
 export default function ImageCarousel({
   images,
   preload = false,
+  altLabel,
+  showTotal = false,
 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   // Images already shown stay mounted so going back never reloads them.
@@ -76,7 +81,7 @@ export default function ImageCarousel({
           <Image
             key={`${index}-${image}`}
             src={image}
-            alt=""
+            alt={`${altLabel} — photograph ${index + 1}${showTotal ? ` of ${count}` : ""}`}
             width={2000}
             height={1333}
             sizes="(max-width: 1100px) 100vw, 1020px"

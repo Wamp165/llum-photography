@@ -21,4 +21,12 @@ export type AdminProjectListItem = Pick<
   "id" | "category_id" | "title" | "slug" | "position" | "cover_image" | "is_published"
 >;
 
+/** Published project as listed in the sitemap. */
+export type SitemapProject = {
+  slug: string;
+  category_slug: string;
+  /** ISO 8601 (UTC). A string because cached reads are stored as JSON. */
+  updated_at: string;
+};
+
 export type ProjectInput = z.infer<typeof projectFormSchema>;

@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getProjectBySlug } from "@/data/projects";
 import { getCurrentAdmin } from "@/lib/auth-guard";
+import { getSettings } from "@/data/settings";
+import { socialMetadata } from "@/lib/social-metadata";
 import { getProjectBlocks } from "@/data/project-blocks";
 import { formatProjectDate } from "@/lib/format-date";
 import BlockRenderer from "@/components/project-blocks/BlockRenderer";
@@ -25,9 +27,17 @@ export async function generateMetadata({
     return {};
   }
 
+  const settings = await getSettings();
+
   return {
     title: project.title,
     description: project.description ?? undefined,
+    ...socialMetadata({
+      siteName: settings.photographer_name,
+      title: project.title,
+      description: project.description,
+      image: project.cover_image,
+    }),
     robots: project.is_published ? undefined : { index: false, follow: false },
   };
 }
@@ -90,6 +100,7 @@ export default async function ProjectPage({
         <BlockRenderer
           key={block.id}
           block={block}
+          projectTitle={project.title}
         />
       ))}
     </article>

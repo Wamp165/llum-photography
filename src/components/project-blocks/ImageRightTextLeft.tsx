@@ -2,11 +2,13 @@ import Image from "next/image";
 
 type Props = {
   image: string;
+  alt: string;
   text: string;
 };
 
 export default function ImageRightTextLeft({
   image,
+  alt,
   text,
 }: Props) {
   return (
@@ -18,7 +20,7 @@ export default function ImageRightTextLeft({
 
         <Image
           src={image}
-          alt=""
+          alt={alt}
           width={1200}
           height={1600}
           sizes="(max-width: 768px) 100vw, 500px"

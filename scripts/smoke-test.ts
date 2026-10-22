@@ -212,10 +212,15 @@ async function main() {
         name: "drafts hidden from public reads; visible with includeDrafts",
         run: async () => {
           assert((await projects.getProjectsByCategory("smoke")).length === 0, "draft listed");
+          const inSitemap = (await projects.getPublishedProjectsForSitemap()).filter((p) => p.category_slug === "smoke");
+          assert(inSitemap.length === 0, "draft in sitemap");
           assert((await projects.getProjectBySlug("smoke", "nordica-luz", false)) === null, "draft visible");
           assert((await projects.getProjectBySlug("smoke", "nordica-luz", true)) !== null, "admin preview");
           await projects.setProjectPublished(projectId, true);
           assert((await projects.getProjectsByCategory("smoke")).length === 1, "published not listed");
+          const published = (await projects.getPublishedProjectsForSitemap()).filter((p) => p.category_slug === "smoke");
+          assert(published.length === 1 && published[0].slug === "nordica-luz", "published not in sitemap");
+          assert(/^\d{4}-\d{2}-\d{2}T[\d:]{8}Z$/.test(published[0].updated_at), `bad date ${published[0].updated_at}`);
         },
       },
       {
