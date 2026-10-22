@@ -6,7 +6,7 @@ shadcn/ui (admin only) · Cloudinary.
 
 ## Setup from scratch
 
-Requirements: Node.js 20+, a PostgreSQL database.
+Requirements: Node.js 22+, a PostgreSQL database.
 
 ```bash
 # 1. Install
