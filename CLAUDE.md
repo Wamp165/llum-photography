@@ -21,7 +21,8 @@ closed set on purpose. Add new ones only when asked, following the recipes below
   (`src/lib/cloudinary-loader.ts`): Cloudinary resizes (`c_limit`, never crops), not our server.
   Admin uploads: next-cloudinary's signed widget.
 - Next.js 16 differs from older versions. When unsure, read `node_modules/next/dist/docs/`
-  (e.g. `proxy.ts` replaces `middleware.ts`; `next/image` uses `preload`, not `priority`).
+  (e.g. `proxy.ts` replaces `middleware.ts`; for the first visible photo of a page use `loading="eager"` + `fetchPriority="high"`
+  (the `lcp` prop of our components); never `priority`, and avoid `preload`).
 
 ## Non-negotiable rules
 

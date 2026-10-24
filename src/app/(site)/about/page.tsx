@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getSettings } from "@/data/settings";
-import { SIZES_HALF_GAP_16 } from "@/lib/image-sizes";
+import { SIZES_HALF_GAP_16, lcpProps } from "@/lib/image-sizes";
 import { excerpt, socialMetadata } from "@/lib/social-metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -33,7 +33,7 @@ export default async function AboutPage() {
             width={1200}
             height={800}
             sizes={SIZES_HALF_GAP_16}
-            preload
+            {...lcpProps(true)}
             className="h-auto w-full"
           />
         )}

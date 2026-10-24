@@ -1,9 +1,10 @@
 import Image from "next/image";
-import { SIZES_FULL, SIZES_GALLERY_2, SIZES_GALLERY_3 } from "@/lib/image-sizes";
+import { SIZES_FULL, SIZES_GALLERY_2, SIZES_GALLERY_3, lcpProps } from "@/lib/image-sizes";
 
 type Props = {
   images: string[];
   projectTitle: string;
+  lcp?: boolean;
 };
 
 const COLUMNS = {
@@ -14,6 +15,7 @@ const COLUMNS = {
 export default function ImageGallery({
   images,
   projectTitle,
+  lcp,
 }: Props) {
   if (images.length === 0) {
     return null;
@@ -28,6 +30,7 @@ export default function ImageGallery({
           width={2000}
           height={1333}
           sizes={SIZES_FULL}
+          {...lcpProps(lcp)}
           className="h-auto max-h-[85vh] w-full object-contain"
         />
       </section>
@@ -49,6 +52,7 @@ export default function ImageGallery({
           width={1200}
           height={1600}
           sizes={imageSizes}
+          {...lcpProps(lcp && index === 0)}
           className="h-auto w-full"
         />
       ))}

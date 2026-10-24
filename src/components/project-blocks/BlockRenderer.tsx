@@ -10,23 +10,26 @@ import ImageRightTextLeft from "./ImageRightTextLeft";
 type Props = {
   block: ProjectBlock;
   projectTitle: string;
+  /** The block's first photo is the LCP image of the page. */
+  lcp?: boolean;
 };
 
 export default function BlockRenderer({
   block,
   projectTitle,
+  lcp = false,
 }: Props) {
   switch (block.type) {
     case "only_text_center":
       return <OnlyTextCenter text={block.content.text} />;
 
     case "image_gallery":
-      return <ImageGallery images={block.content.images} projectTitle={projectTitle} />;
+      return <ImageGallery images={block.content.images} projectTitle={projectTitle} lcp={lcp} />;
 
     case "carousel":
       return (
         <section className="my-24">
-          <ImageCarousel images={block.content.images} altLabel={projectTitle} />
+          <ImageCarousel images={block.content.images} altLabel={projectTitle} lcp={lcp} />
         </section>
       );
 
@@ -36,6 +39,7 @@ export default function BlockRenderer({
           image={block.content.image}
           alt={projectTitle}
           text={block.content.text}
+          lcp={lcp}
         />
       );
 
@@ -45,6 +49,7 @@ export default function BlockRenderer({
           image={block.content.image}
           alt={projectTitle}
           text={block.content.text}
+          lcp={lcp}
         />
       );
 
@@ -54,6 +59,7 @@ export default function BlockRenderer({
           image={block.content.image}
           alt={projectTitle}
           text={block.content.text}
+          lcp={lcp}
         />
       );
 
@@ -63,6 +69,7 @@ export default function BlockRenderer({
           image={block.content.image}
           alt={projectTitle}
           text={block.content.text}
+          lcp={lcp}
         />
       );
 

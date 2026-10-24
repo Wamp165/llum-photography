@@ -34,3 +34,11 @@ export const SIZES_GALLERY_3 =
 /** Carousel with arrows: the image box has `mx-10` below xl, so 5rem less than the column. */
 export const SIZES_CAROUSEL =
   "(max-width: 767px) calc(100vw - 8rem), (max-width: 1100px) calc(100vw - 10rem), (max-width: 1279px) 940px, 1020px";
+
+/**
+ * Props for the first visible photo of a page (the likely LCP element): fetched right
+ * away with high priority. Every other image keeps next/image's default lazy loading.
+ */
+export function lcpProps(lcp: boolean | undefined) {
+  return lcp ? ({ loading: "eager", fetchPriority: "high" } as const) : {};
+}
