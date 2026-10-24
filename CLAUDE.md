@@ -281,3 +281,23 @@ Node 22, npm cache, 15 min timeout, one run per branch: `cancel-in-progress: tru
    draft and an unknown slug return 404; `/admin` without a session redirects to `/admin/login`.
 4. Every new Server Action starts with `await requireAdmin()`; no SQL outside `src/data/*`.
 5. Visually: no cropped photos, works at phone width (admin included).
+
+## When running in GitHub Actions (claude.yml)
+
+The workflow installs dependencies before you start. You may run exactly two commands:
+`npx tsc --noEmit` and `npm run lint`.
+
+- Run both after your changes and fix every error until both pass.
+- Do NOT run or attempt anything else: no `npm install`/`npm ci`, `npm run build`,
+  `npm run test:smoke`, `npm run db:migrate`, dev server or other shell commands. You don't have
+  permission and there is no database here. `ci.yml` runs build and smoke tests on the pull request.
+- Items 3 and 5 of "Before considering a change done" are checked by the reviewer on the Vercel preview.
+- End your final comment with this section, filled in truthfully:
+
+  ### Checks
+  - ✅ `npx tsc --noEmit`
+  - ✅ `npm run lint`
+  - ⏭️ `npm run build` and `npm run test:smoke`: run by CI on the pull request
+  - 👀 To review on the Vercel preview: <what to look at for this change>
+
+  Use ❌ with the error summary if a check still fails after your fixes. Never mark ✅ a check you did not run.
