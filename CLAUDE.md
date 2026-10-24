@@ -19,7 +19,8 @@ closed set on purpose. Add new ones only when asked, following the recipes below
   The public site keeps its own editorial design (`src/app/(site)/globals.css`).
 - Images on **Cloudinary**, rendered with `next/image` through a custom loader
   (`src/lib/cloudinary-loader.ts`): Cloudinary resizes (`c_limit`, never crops), not our server.
-  Admin uploads: next-cloudinary's signed widget.
+  Admin uploads: next-cloudinary's signed widget. The `sizes` of public images live in
+  `src/lib/image-sizes.ts`, whose `lcpProps()` marks the first visible photo of a page.
 - Next.js 16 differs from older versions. When unsure, read `node_modules/next/dist/docs/`
   (e.g. `proxy.ts` replaces `middleware.ts`; for the first visible photo of a page use `loading="eager"` + `fetchPriority="high"`
   (the `lcp` prop of our components); never `priority`, and avoid `preload`).
@@ -46,6 +47,11 @@ closed set on purpose. Add new ones only when asked, following the recipes below
    Components only declare their own `Props`.
 9. One `<main>` per page. Comments in English and only when they explain something non-obvious.
 10. No new dependencies unless the user asks.
+11. If you change widths, paddings, gaps, max widths or columns of the public site (globals.css
+    `site-container`, category layouts, project blocks, carousel, About), update the matching sizes
+    in `src/lib/image-sizes.ts` in the same change. Each constant must match the image's real
+    rendered width at phone, tablet and desktop widths. New public images use a constant from that
+    file (add one if needed), never an inline sizes string.
 
 ## Folder map
 
@@ -81,6 +87,7 @@ src/
     auth-guard.ts      getCurrentAdmin() / requireAdmin().
     constants.ts       CATEGORY_LAYOUTS, BLOCK_TYPES, ... (source of truth).
     schemas/           Zod schemas: common, project-block, settings, category, project.
+    image-sizes.ts     sizes for public images + lcpProps()
     slugify.ts  revalidate.ts  format-date.ts  utils.ts (shadcn `cn`)
   types/               Row types and shared types.
   proxy.ts             Optimistic redirect of /admin/* without a session cookie.
@@ -187,8 +194,8 @@ same host as `images.remotePatterns` in `next.config.ts`).
 1. `src/lib/constants.ts`: add `"quote"` to `BLOCK_TYPES`.
 2. Zod: add `z.object({ type: z.literal("quote"), content: z.object({ text, author: ... }) })` to the
    union in `src/lib/schemas/project-block.ts` (a compile-time check fails until you do).
-3. Public component: `src/components/project-blocks/Quote.tsx` (decides its own width/spacing),
-   then a `case "quote":` in `BlockRenderer.tsx` (the `never` check fails until you do).
+3. Public component: `src/components/project-blocks/Quote.tsx` (decides its own width/spacing; use or
+   add a sizes constant in `src/lib/image-sizes.ts`), then a `case "quote":` in `BlockRenderer.tsx` (the `never` check fails until you do).
 4. Admin form: `src/components/admin/block-forms/QuoteBlockFields.tsx` (inputs + hidden
    `content` JSON), registered in `blockForms` in `block-forms/index.tsx` (compile error until you
    do), and a `case` in `components/admin/blocks/BlockSummary.tsx`.
@@ -198,7 +205,8 @@ same host as `images.remotePatterns` in `next.config.ts`).
 ### Add a category layout (example: `list`)
 1. `src/lib/constants.ts`: add `"list"` to `CATEGORY_LAYOUTS`.
 2. `src/components/category-layouts/List.tsx` receiving `CategoryLayoutProps` (no cropping; skip
-   the image when `cover_image` is null), registered in `category-layouts/index.ts`.
+   the image when `cover_image` is null; use or add a sizes constant in `src/lib/image-sizes.ts`),
+   registered in `category-layouts/index.ts`.
 3. Add its label to `LAYOUT_LABELS` in `src/app/admin/(panel)/categories/CategoryForm.tsx`.
 4. `npx tsc --noEmit` and `npm run test:smoke`. No migration: the database doesn't check layouts.
 

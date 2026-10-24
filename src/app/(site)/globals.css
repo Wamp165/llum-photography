@@ -21,6 +21,7 @@ html {
 }
 
 /* The one content column of the public site: the navbar and every page share its edges. */
+/* The image sizes in src/lib/image-sizes.ts depend on this padding and max width: update them if you change it. */
 @utility site-container {
   width: 100%;
   max-width: 1100px;
