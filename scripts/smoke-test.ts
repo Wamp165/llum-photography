@@ -51,7 +51,7 @@ async function main() {
     const { settingsFormSchema } = await import("@/lib/schemas/settings");
     const { categoryFormSchema } = await import("@/lib/schemas/category");
     const { projectFormSchema } = await import("@/lib/schemas/project");
-    const { isCloudinaryImageUrl } = await import("@/lib/schemas/common");
+    const { isCloudinaryImageUrl, isSlug } = await import("@/lib/schemas/common");
     const { slugify } = await import("@/lib/slugify");
     const categories = await import("@/data/categories");
     const projects = await import("@/data/projects");
@@ -106,6 +106,14 @@ async function main() {
           for (const block of bad) {
             assert(!blockSchemas.projectBlockSchema.safeParse(block).success, `accepted ${JSON.stringify(block)}`);
           }
+        },
+      },
+      {
+        name: "isSlug accepts real slugs and rejects probe paths",
+        run: () => {
+          for (const ok of ["nordic-light", "old_slug"]) assert(isSlug(ok), `rejected ${ok}`);
+          const bad = ["wp-login.php", ".env", "xmlrpc.php", "Nordic", "a--b", "a".repeat(101)];
+          for (const value of bad) assert(!isSlug(value), `accepted ${value}`);
         },
       },
       {

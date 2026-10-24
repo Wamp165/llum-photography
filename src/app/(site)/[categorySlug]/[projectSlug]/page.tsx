@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getProjectBySlug } from "@/data/projects";
 import { getCurrentAdmin } from "@/lib/auth-guard";
 import { getSettings } from "@/data/settings";
+import { isSlug } from "@/lib/schemas/common";
 import { socialMetadata } from "@/lib/social-metadata";
 import { getProjectBlocks } from "@/data/project-blocks";
 import { formatProjectDate } from "@/lib/format-date";
@@ -21,6 +22,8 @@ export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
   const { categorySlug, projectSlug } = await params;
+  if (!isSlug(categorySlug) || !isSlug(projectSlug)) return {};
+
   const admin = await getCurrentAdmin();
   const project = await getProjectBySlug(categorySlug, projectSlug, admin !== null);
 
@@ -47,6 +50,8 @@ export default async function ProjectPage({
   params,
 }: Props) {
   const { categorySlug, projectSlug } = await params;
+  if (!isSlug(categorySlug) || !isSlug(projectSlug)) notFound();
+
   // Drafts are visible only to the logged-in admin (for previewing).
   const admin = await getCurrentAdmin();
   const project = await getProjectBySlug(categorySlug, projectSlug, admin !== null);

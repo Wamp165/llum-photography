@@ -215,6 +215,7 @@ components, forms, labels).
 - A new public read in `src/data/*` must use `cachedSiteRead()` with a unique key prefix. Arguments
   are part of the key (`includeDrafts` keeps drafts away from visitors) and results must be plain JSON data.
 - Outside Next (smoke test, seed scripts) `cachedSiteRead()` reads the database directly.
+- Dynamic public routes validate their slugs with `isSlug()` before any read, so invalid URLs never reach the database or the cache.
 
 ## Environment variables
 
