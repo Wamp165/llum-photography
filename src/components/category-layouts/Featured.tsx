@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { SIZES_FULL, SIZES_HALF_GAP_12 } from "@/lib/image-sizes";
 import type { CategoryLayoutProps } from "@/types/category-layout";
 import type { ProjectListItem } from "@/types/project-list-item";
 
@@ -24,7 +25,7 @@ export default function Featured({
             alt={featured.title}
             width={2000}
             height={1333}
-            sizes="(max-width: 1100px) 100vw, 1020px"
+            sizes={SIZES_FULL}
             className="h-auto max-h-[85vh] w-full object-contain"
           />
         )}
@@ -56,7 +57,7 @@ export default function Featured({
                   alt={project.title}
                   width={1200}
                   height={900}
-                  sizes="(max-width: 768px) 100vw, 600px"
+                  sizes={SIZES_HALF_GAP_12}
                   className="h-auto w-full"
                 />
               )}

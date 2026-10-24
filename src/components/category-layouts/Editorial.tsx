@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { SIZES_HALF_GAP_10 } from "@/lib/image-sizes";
 import type { CategoryLayoutProps } from "@/types/category-layout";
 
 export default function Editorial({
@@ -21,7 +22,7 @@ export default function Editorial({
                   alt={project.title}
                   width={700}
                   height={500}
-                  sizes="(max-width: 768px) 100vw, 500px"
+                  sizes={SIZES_HALF_GAP_10}
                   className="h-auto w-full"
                 />
               </div>

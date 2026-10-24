@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { SIZES_HALF_GAP_10 } from "@/lib/image-sizes";
 
 type Props = {
   image: string;
@@ -19,7 +20,7 @@ export default function ImageLeftTextRight({
           alt={alt}
           width={1200}
           height={1600}
-          sizes="(max-width: 768px) 100vw, 500px"
+          sizes={SIZES_HALF_GAP_10}
           className="h-auto w-full"
         />
 
