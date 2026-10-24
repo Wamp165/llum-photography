@@ -63,6 +63,9 @@ src/
     api/sign-cloudinary-params/  Signs admin uploads (admin only).
     global-not-found.tsx         404 for unmatched URLs (two root layouts → experimental.globalNotFound).
     robots.ts                    robots.txt (disallows /admin and /api).
+    global-error.tsx             Error page when a root layout fails (e.g. database down). Own <html>.
+    (site)/error.tsx             Error page inside the site layout (navbar stays).
+    admin/error.tsx              Error card for the admin (panel and login).
   components/
     ui/                shadcn/ui (generated; admin only).
     admin/             Admin building blocks: ActionForm, Field, ActionButton, ImageInput, ...
@@ -121,6 +124,9 @@ export async function saveThing(thingId: number, _state: ActionState, formData: 
 Client side: `<ActionForm action={saveThing.bind(null, id)}>` with `<Field name="...">` inside
 (errors per field, disabled button while saving, "Saved" toast). Single buttons (move, delete,
 publish) use `<ActionButton>`; destructive ones pass `confirm={...}` (shadcn AlertDialog).
+Unexpected errors thrown by an action are caught by `ActionForm`/`ActionButton`
+(`safe-action.ts`, redirects pass through) and shown as an error toast ("Something went wrong.
+Please try again."), keeping the form inputs.
 Reordering = swap `position` with the neighbour in a transaction after renumbering 1..n.
 
 ## Database schema
