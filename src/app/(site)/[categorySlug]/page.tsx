@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getCategoryBySlug } from "@/data/categories";
 import { getProjectsByCategory } from "@/data/projects";
 import { getSettings } from "@/data/settings";
+import { isSlug } from "@/lib/schemas/common";
 import { socialMetadata } from "@/lib/social-metadata";
 import { categoryLayouts } from "@/components/category-layouts";
 
@@ -16,6 +17,8 @@ export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
   const { categorySlug } = await params;
+  if (!isSlug(categorySlug)) return {};
+
   const category = await getCategoryBySlug(categorySlug);
 
   if (!category) return {};
@@ -39,6 +42,8 @@ export default async function CategoryPage({
   params,
 }: Props) {
   const { categorySlug } = await params;
+  if (!isSlug(categorySlug)) notFound();
+
   const category = await getCategoryBySlug(categorySlug);
 
   if (!category) {

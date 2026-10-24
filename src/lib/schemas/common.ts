@@ -43,13 +43,21 @@ export function optionalText(label: string, max: number) {
 }
 
 // Existing slugs use underscores, new ones hyphens: both are valid.
+export const SLUG_PATTERN = /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/;
+export const SLUG_MAX_LENGTH = 100;
+
+/** Cheap format check, used by public routes before they query the database. */
+export function isSlug(value: string): boolean {
+  return value.length <= SLUG_MAX_LENGTH && SLUG_PATTERN.test(value);
+}
+
 export const slug = formString.pipe(
   z
     .string()
     .min(1, "Slug is required.")
-    .max(100, "Slug is too long (max 100 characters).")
+    .max(SLUG_MAX_LENGTH, `Slug is too long (max ${SLUG_MAX_LENGTH} characters).`)
     .regex(
-      /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/,
+      SLUG_PATTERN,
       "Use only lowercase letters, numbers and hyphens (e.g. nordic-light)."
     )
 );
