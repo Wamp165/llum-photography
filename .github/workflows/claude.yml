@@ -48,4 +48,4 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           label_trigger: "claude"
           # Claude may only run these two checks. Build and smoke tests run in ci.yml on the PR.
-          claude_args: '--max-turns 30 --allowedTools "Bash(npx tsc --noEmit),Bash(npm run lint)"'
+          claude_args: '--max-turns 100 --allowedTools "Bash(npx tsc --noEmit),Bash(npm run lint)"'
