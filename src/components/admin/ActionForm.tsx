@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { ActionState, FormAction } from "@/types/action-result";
+import { safeAction } from "./safe-action";
 
 type FieldErrors = Partial<Record<string, string>>;
 
@@ -44,7 +45,7 @@ export default function ActionForm({
   secondaryActions,
   className = "space-y-6",
 }: Props) {
-  const [state, formAction, pending] = useActionState(action, null);
+  const [state, formAction, pending] = useActionState(safeAction(action), null);
 
   // Every action call returns a new object: react to each result exactly once.
   const handledState = useRef<ActionState>(null);

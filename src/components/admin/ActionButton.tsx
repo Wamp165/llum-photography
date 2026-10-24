@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import type { ActionState, FormAction } from "@/types/action-result";
+import { safeAction } from "./safe-action";
 
 type Props = {
   /** A Server Action with its arguments bound, e.g. deleteX.bind(null, id). */
@@ -44,7 +45,7 @@ export default function ActionButton({
   confirm,
   successMessage,
 }: Props) {
-  const [state, formAction, pending] = useActionState(action, null);
+  const [state, formAction, pending] = useActionState(safeAction(action), null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handledState = useRef<ActionState>(null);
