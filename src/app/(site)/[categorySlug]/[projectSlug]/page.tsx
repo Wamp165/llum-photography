@@ -7,7 +7,7 @@ import { getSettings } from "@/data/settings";
 import { socialMetadata } from "@/lib/social-metadata";
 import { getProjectBlocks } from "@/data/project-blocks";
 import { formatProjectDate } from "@/lib/format-date";
-import { SIZES_FULL } from "@/lib/image-sizes";
+import { SIZES_FULL, lcpProps } from "@/lib/image-sizes";
 import BlockRenderer from "@/components/project-blocks/BlockRenderer";
 
 type Props = {
@@ -56,6 +56,10 @@ export default async function ProjectPage({
   }
 
   const blocks = await getProjectBlocks(project.id);
+  // Without a cover, the first block with a photo holds the LCP image.
+  const lcpBlockId = project.cover_image
+    ? undefined
+    : blocks.find((block) => block.type !== "only_text_center")?.id;
 
   return (
     <article className="site-container pb-24">
@@ -72,7 +76,7 @@ export default async function ProjectPage({
           width={2000}
           height={1333}
           sizes={SIZES_FULL}
-          preload
+          {...lcpProps(true)}
           className="h-auto max-h-[85vh] w-full object-contain"
         />
       )}
@@ -102,6 +106,7 @@ export default async function ProjectPage({
           key={block.id}
           block={block}
           projectTitle={project.title}
+          lcp={block.id === lcpBlockId}
         />
       ))}
     </article>

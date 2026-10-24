@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { SIZES_CAROUSEL, SIZES_FULL } from "@/lib/image-sizes";
+import { SIZES_CAROUSEL, SIZES_FULL, lcpProps } from "@/lib/image-sizes";
 
 type ImageCarouselProps = {
   images: string[];
-  preload?: boolean;
+  /** Marks the first image as the LCP image of the page (eager, high priority). */
+  lcp?: boolean;
   /** Alt text is "<altLabel> — photograph <n>" (plus " of <total>" with `showTotal`). */
   altLabel: string;
   showTotal?: boolean;
@@ -17,7 +18,7 @@ const ARROW_CLASSES =
 
 export default function ImageCarousel({
   images,
-  preload = false,
+  lcp = false,
   altLabel,
   showTotal = false,
 }: ImageCarouselProps) {
@@ -86,7 +87,7 @@ export default function ImageCarousel({
             width={2000}
             height={1333}
             sizes={hasMany ? SIZES_CAROUSEL : SIZES_FULL}
-            preload={preload && index === 0}
+            {...lcpProps(lcp && index === 0)}
             aria-hidden={index !== currentIndex}
             className={`col-start-1 row-start-1 h-auto max-h-[80vh] w-full self-center object-contain transition-opacity duration-300 ${
               index === currentIndex ? "opacity-100" : "pointer-events-none opacity-0"

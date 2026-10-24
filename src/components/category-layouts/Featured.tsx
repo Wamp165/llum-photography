@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { SIZES_FULL, SIZES_HALF_GAP_12 } from "@/lib/image-sizes";
+import { SIZES_FULL, SIZES_HALF_GAP_12, lcpProps } from "@/lib/image-sizes";
 import type { CategoryLayoutProps } from "@/types/category-layout";
 import type { ProjectListItem } from "@/types/project-list-item";
 
@@ -26,6 +26,7 @@ export default function Featured({
             width={2000}
             height={1333}
             sizes={SIZES_FULL}
+            {...lcpProps(true)}
             className="h-auto max-h-[85vh] w-full object-contain"
           />
         )}

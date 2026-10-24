@@ -1,11 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { SIZES_GRID } from "@/lib/image-sizes";
+import { SIZES_GRID, lcpProps } from "@/lib/image-sizes";
 import type { CategoryLayoutProps } from "@/types/category-layout";
 
 export default function Grid({
   projects,
 }: CategoryLayoutProps) {
+  const lcpId = projects.find((project) => project.cover_image)?.id;
+
   return (
     <div>
       <div className="grid items-start gap-12 md:grid-cols-2 lg:grid-cols-3">
@@ -22,6 +24,7 @@ export default function Grid({
                 width={1200}
                 height={900}
                 sizes={SIZES_GRID}
+                {...lcpProps(project.id === lcpId)}
                 className="h-auto w-full"
               />
             )}

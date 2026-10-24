@@ -1,11 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { SIZES_HALF_GAP_10 } from "@/lib/image-sizes";
+import { SIZES_HALF_GAP_10, lcpProps } from "@/lib/image-sizes";
 import type { CategoryLayoutProps } from "@/types/category-layout";
 
 export default function Editorial({
   projects,
 }: CategoryLayoutProps) {
+  const lcpId = projects.find((project) => project.cover_image)?.id;
+
   return (
     <div>
       {projects.map((project) => (
@@ -23,6 +25,7 @@ export default function Editorial({
                   width={700}
                   height={500}
                   sizes={SIZES_HALF_GAP_10}
+                  {...lcpProps(project.id === lcpId)}
                   className="h-auto w-full"
                 />
               </div>

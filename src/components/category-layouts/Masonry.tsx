@@ -1,11 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { SIZES_GRID } from "@/lib/image-sizes";
+import { SIZES_GRID, lcpProps } from "@/lib/image-sizes";
 import type { CategoryLayoutProps } from "@/types/category-layout";
 
 export default function Masonry({
   projects,
 }: CategoryLayoutProps) {
+  const lcpId = projects.find((project) => project.cover_image)?.id;
+
   return (
     <div className="columns-1 gap-12 md:columns-2 lg:columns-3">
       {projects.map((project) => (
@@ -21,6 +23,7 @@ export default function Masonry({
               width={1200}
               height={900}
               sizes={SIZES_GRID}
+              {...lcpProps(project.id === lcpId)}
               className="h-auto w-full"
             />
           )}

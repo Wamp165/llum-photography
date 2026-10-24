@@ -11,7 +11,7 @@ export default async function Home() {
         images={settings.homepage_images ?? []}
         altLabel={settings.photographer_name}
         showTotal
-        preload
+        lcp
       />
     </div>
   );

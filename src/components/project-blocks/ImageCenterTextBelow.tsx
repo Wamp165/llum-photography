@@ -1,16 +1,18 @@
 import Image from "next/image";
-import { SIZES_FULL } from "@/lib/image-sizes";
+import { SIZES_FULL, lcpProps } from "@/lib/image-sizes";
 
 type Props = {
   image: string;
   alt: string;
   text: string;
+  lcp?: boolean;
 };
 
 export default function ImageCenterTextBelow({
   image,
   alt,
   text,
+  lcp,
 }: Props) {
   return (
     <section className="my-24">
@@ -20,6 +22,7 @@ export default function ImageCenterTextBelow({
         width={2000}
         height={1333}
         sizes={SIZES_FULL}
+        {...lcpProps(lcp)}
         className="h-auto max-h-[85vh] w-full object-contain"
       />
 
