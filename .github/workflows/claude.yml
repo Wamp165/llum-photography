@@ -16,7 +16,9 @@ jobs:
     # Only start a runner when there is actually something for Claude to do
     if: |
       (github.event_name == 'issues' && github.event.label.name == 'claude') ||
-      (github.event_name != 'issues' && contains(github.event.comment.body, '@claude'))
+      (github.event_name != 'issues' &&
+        contains(github.event.comment.body, '@claude') &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # One run at a time per issue/PR
