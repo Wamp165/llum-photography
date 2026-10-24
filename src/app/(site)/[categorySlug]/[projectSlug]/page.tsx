@@ -7,6 +7,7 @@ import { getSettings } from "@/data/settings";
 import { socialMetadata } from "@/lib/social-metadata";
 import { getProjectBlocks } from "@/data/project-blocks";
 import { formatProjectDate } from "@/lib/format-date";
+import { SIZES_FULL } from "@/lib/image-sizes";
 import BlockRenderer from "@/components/project-blocks/BlockRenderer";
 
 type Props = {
@@ -70,7 +71,7 @@ export default async function ProjectPage({
           alt={project.title}
           width={2000}
           height={1333}
-          sizes="(max-width: 1100px) 100vw, 1020px"
+          sizes={SIZES_FULL}
           preload
           className="h-auto max-h-[85vh] w-full object-contain"
         />

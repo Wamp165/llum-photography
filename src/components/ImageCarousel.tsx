@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { SIZES_CAROUSEL, SIZES_FULL } from "@/lib/image-sizes";
 
 type ImageCarouselProps = {
   images: string[];
@@ -84,7 +85,7 @@ export default function ImageCarousel({
             alt={`${altLabel} — photograph ${index + 1}${showTotal ? ` of ${count}` : ""}`}
             width={2000}
             height={1333}
-            sizes="(max-width: 1100px) 100vw, 1020px"
+            sizes={hasMany ? SIZES_CAROUSEL : SIZES_FULL}
             preload={preload && index === 0}
             aria-hidden={index !== currentIndex}
             className={`col-start-1 row-start-1 h-auto max-h-[80vh] w-full self-center object-contain transition-opacity duration-300 ${

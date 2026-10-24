@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { SIZES_FULL, SIZES_GALLERY_2, SIZES_GALLERY_3 } from "@/lib/image-sizes";
 
 type Props = {
   images: string[];
@@ -26,7 +27,7 @@ export default function ImageGallery({
           alt={`${projectTitle} — photograph 1`}
           width={2000}
           height={1333}
-          sizes="(max-width: 1100px) 100vw, 1020px"
+          sizes={SIZES_FULL}
           className="h-auto max-h-[85vh] w-full object-contain"
         />
       </section>
@@ -34,10 +35,7 @@ export default function ImageGallery({
   }
 
   const columns = images.length === 2 ? COLUMNS[2] : COLUMNS[3];
-  const imageSizes =
-    images.length === 2
-      ? "(max-width: 768px) 100vw, 500px"
-      : "(max-width: 768px) 100vw, 330px";
+  const imageSizes = images.length === 2 ? SIZES_GALLERY_2 : SIZES_GALLERY_3;
 
   return (
     <section

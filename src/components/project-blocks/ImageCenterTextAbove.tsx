@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { SIZES_FULL } from "@/lib/image-sizes";
 
 type Props = {
   image: string;
@@ -24,7 +25,7 @@ export default function ImageCenterTextAbove({
         alt={alt}
         width={2000}
         height={1333}
-        sizes="(max-width: 1100px) 100vw, 1020px"
+        sizes={SIZES_FULL}
         className="h-auto max-h-[85vh] w-full object-contain"
       />
     </section>

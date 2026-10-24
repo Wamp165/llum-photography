@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { SIZES_GRID } from "@/lib/image-sizes";
 import type { CategoryLayoutProps } from "@/types/category-layout";
 
 export default function Grid({
@@ -20,7 +21,7 @@ export default function Grid({
                 alt={project.title}
                 width={1200}
                 height={900}
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
+                sizes={SIZES_GRID}
                 className="h-auto w-full"
               />
             )}
