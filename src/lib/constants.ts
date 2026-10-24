@@ -1,11 +1,12 @@
-// Closed sets of values. These arrays are the source of truth in TypeScript; the
-// SQL CHECK constraints must contain exactly the same values (the smoke test
-// compares them with pg_constraint).
+import type { CategoryLayout } from "@/types/category-layout";
 
-/** categories.layout — CHECK categories_layout_check */
+// Closed sets of values. These arrays are the source of truth: Zod enforces them on
+// write and the database does not check them (unknown stored values are handled on read).
+
+/** categories.layout */
 export const CATEGORY_LAYOUTS = ["editorial", "grid", "masonry", "featured"] as const;
 
-/** project_blocks.type — CHECK project_blocks_type_check */
+/** project_blocks.type */
 export const BLOCK_TYPES = [
   "only_text_center",
   "image_gallery",
@@ -15,6 +16,13 @@ export const BLOCK_TYPES = [
   "image_center_text_above",
   "image_center_text_below",
 ] as const;
+
+/** Reads a stored layout: unknown values (e.g. a removed layout) fall back to "editorial". */
+export function toCategoryLayout(value: string): CategoryLayout {
+  return (CATEGORY_LAYOUTS as readonly string[]).includes(value)
+    ? (value as CategoryLayout)
+    : "editorial";
+}
 
 export const MAX_GALLERY_IMAGES = 3;
 

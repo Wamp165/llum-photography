@@ -38,8 +38,9 @@ closed set on purpose. Add new ones only when asked, following the recipes below
 5. **shadcn/ui only in the admin.** Never import `@/components/ui/*` from public pages/components.
 6. **Every schema change is a numbered `.sql` migration** in `db/migrations/` (Better Auth's tables
    included). Never use Better Auth's own `migrate` command.
-7. Closed values (`CATEGORY_LAYOUTS`, `BLOCK_TYPES`) live in `src/lib/constants.ts`; the SQL CHECK
-   constraints must list exactly the same values (`npm run test:smoke` verifies it).
+7. Closed values (`CATEGORY_LAYOUTS`, `BLOCK_TYPES`) live only in `src/lib/constants.ts` and are
+   enforced by Zod on write; the database does not check them. Unknown layouts fall back to
+   `editorial`, unknown blocks are skipped.
 8. Types for database rows are hand-written in `src/types/*`; block types are inferred from Zod.
    Components only declare their own `Props`.
 9. One `<main>` per page. Comments in English and only when they explain something non-obvious.
@@ -130,15 +131,16 @@ go in new numbered files). Current state:
   placeholder name. Photographer name, bio, profile picture, Instagram handle, contact email,
   `homepage_images` (JSONB array of URLs). `getSettings()` throws if the row is missing.
 - **`categories`** — sections in the menu. `slug` unique (some slugs are reserved, see constants),
-  `position` 1..n, `layout` in `CATEGORY_LAYOUTS` (CHECK `categories_layout_check`).
+  `position` 1..n, `layout` in `CATEGORY_LAYOUTS` (enforced by Zod, no CHECK;
+  unknown stored values read as `"editorial"` via `toCategoryLayout`).
 - **`projects`** — `category_id` NOT NULL, `ON DELETE RESTRICT` (a category with projects can't
   be deleted). `slug` unique across all projects. `position` 1..n inside its category.
   `is_published` (public pages only show `true`; drafts are visible to the logged-in admin with a
   "Draft — not public" strip). `description` (list), `introduction` (project page), `cover_image`,
   `project_date` (DATE, read as `"YYYY-MM-DD"`), `created_at`, `updated_at`.
 - **`project_blocks`** — ordered blocks of a project, `ON DELETE CASCADE`. `type` in `BLOCK_TYPES`
-  (CHECK `project_blocks_type_check`), `content` JSONB object validated by
-  `src/lib/schemas/project-block.ts`, `position` 1..n. Invalid rows are skipped on the public site
+  (enforced by Zod, no CHECK), `content` JSONB object validated by
+  `src/lib/schemas/project-block.ts`, `position` 1..n. Invalid rows (unknown types included) are skipped on the public site
   (with `console.error`) and flagged in the admin.
 - **Better Auth**: `user`, `session`, `account` (password hash, `providerId = 'credential'`),
   `verification`, `rateLimit`. Never query them with SQL.
@@ -176,23 +178,28 @@ same host as `images.remotePatterns` in `next.config.ts`).
 
 ### Add a block type (example: `quote` with `{ text, author }`)
 1. `src/lib/constants.ts`: add `"quote"` to `BLOCK_TYPES`.
-2. Migration: drop and re-add `project_blocks_type_check` with the new list → `npm run db:migrate`.
-3. Zod: add `z.object({ type: z.literal("quote"), content: z.object({ text, author: ... }) })` to the
+2. Zod: add `z.object({ type: z.literal("quote"), content: z.object({ text, author: ... }) })` to the
    union in `src/lib/schemas/project-block.ts` (a compile-time check fails until you do).
-4. Public component: `src/components/project-blocks/Quote.tsx` (decides its own width/spacing),
+3. Public component: `src/components/project-blocks/Quote.tsx` (decides its own width/spacing),
    then a `case "quote":` in `BlockRenderer.tsx` (the `never` check fails until you do).
-5. Admin form: `src/components/admin/block-forms/QuoteBlockFields.tsx` (inputs + hidden
+4. Admin form: `src/components/admin/block-forms/QuoteBlockFields.tsx` (inputs + hidden
    `content` JSON), registered in `blockForms` in `block-forms/index.tsx` (compile error until you
    do), and a `case` in `components/admin/blocks/BlockSummary.tsx`.
-6. Update the block table above. `npx tsc --noEmit` and `npm run test:smoke`.
+5. Update the block table above. `npx tsc --noEmit` and `npm run test:smoke`. No migration: the
+   database doesn't check block types.
 
 ### Add a category layout (example: `list`)
 1. `src/lib/constants.ts`: add `"list"` to `CATEGORY_LAYOUTS`.
-2. Migration: drop and re-add `categories_layout_check` with the new list → `npm run db:migrate`.
-3. `src/components/category-layouts/List.tsx` receiving `CategoryLayoutProps` (no cropping; skip
+2. `src/components/category-layouts/List.tsx` receiving `CategoryLayoutProps` (no cropping; skip
    the image when `cover_image` is null), registered in `category-layouts/index.ts`.
-4. Add its label to `LAYOUT_LABELS` in `src/app/admin/(panel)/categories/CategoryForm.tsx`.
-5. `npx tsc --noEmit` and `npm run test:smoke`.
+3. Add its label to `LAYOUT_LABELS` in `src/app/admin/(panel)/categories/CategoryForm.tsx`.
+4. `npx tsc --noEmit` and `npm run test:smoke`. No migration: the database doesn't check layouts.
+
+### Remove a category layout or block type
+No migration either. First move existing data off it (change those categories to another layout,
+delete those blocks), or rely on the fallback (unknown layouts read as `editorial`, unknown blocks
+are skipped on the public site and flagged in the admin). Then delete the code (constants, Zod,
+components, forms, labels).
 
 ## Caching
 
@@ -226,7 +233,7 @@ npx tsc --noEmit      # type check
 npm run db:migrate    # apply pending migrations
 npm run admin:create  # create/update the admin account (interactive, or ADMIN_EMAIL/ADMIN_PASSWORD)
 npm run auth:schema   # print the SQL Better Auth is missing (after changing its config/plugins)
-npm run test:smoke    # checks on a throwaway local database (CHECKs vs constants, Zod, data layer)
+npm run test:smoke    # checks on a throwaway local database (Zod, data layer, fallbacks for unknown layouts/block types)
 ```
 
 Note: `npm install` of a package depending on `better-auth` may hit an npm bug ("edgesOut"); use

@@ -69,42 +69,11 @@ async function main() {
       return Object.fromEntries(data);
     };
 
-    /** Values listed in a CHECK (col = ANY (ARRAY['a'::text, ...])) constraint. */
-    async function checkValues(constraint: string): Promise<string[]> {
-      const [row] = await sql<{ def: string }[]>`
-        SELECT pg_get_constraintdef(oid) AS def FROM pg_constraint WHERE conname = ${constraint}
-      `;
-      assert(row, `constraint ${constraint} not found`);
-      return [...row.def.matchAll(/'([^']+)'::text/g)].map((match) => match[1]).sort();
-    }
-
     let projectId = 0;
     let secondId = 0;
     let categoryId = 0;
 
     const checks: Check[] = [
-      // --- Database CHECKs match the TypeScript constants ---------------------
-      {
-        name: "categories_layout_check == CATEGORY_LAYOUTS",
-        run: async () => {
-          const values = await checkValues("categories_layout_check");
-          assert(
-            JSON.stringify(values) === JSON.stringify([...constants.CATEGORY_LAYOUTS].sort()),
-            `DB: ${values.join(", ")}`
-          );
-        },
-      },
-      {
-        name: "project_blocks_type_check == BLOCK_TYPES",
-        run: async () => {
-          const values = await checkValues("project_blocks_type_check");
-          assert(
-            JSON.stringify(values) === JSON.stringify([...constants.BLOCK_TYPES].sort()),
-            `DB: ${values.join(", ")}`
-          );
-        },
-      },
-
       // --- Zod schemas ------------------------------------------------------
       {
         name: "valid blocks of every type pass",
@@ -302,6 +271,40 @@ async function main() {
           const adminBlocks = await blocks.getAdminProjectBlocks(projectId);
           assert(publicBlocks.length === 1, "invalid block rendered");
           assert(adminBlocks.length === 2 && adminBlocks.some((block) => !block.valid), "not flagged");
+        },
+      },
+      {
+        name: "unknown block type is skipped publicly, flagged in the admin",
+        run: async () => {
+          await sql`
+            INSERT INTO project_blocks (project_id, type, content, position)
+            VALUES (${projectId}, 'video', ${sql.json({ url: "x" })}, 10)
+          `;
+          const originalError = console.error;
+          console.error = () => {};
+          const publicBlocks = await blocks.getProjectBlocks(projectId);
+          console.error = originalError;
+          const adminBlocks = await blocks.getAdminProjectBlocks(projectId);
+          assert(publicBlocks.length === 1, "unknown block rendered");
+          assert(
+            adminBlocks.length === 3 && adminBlocks.filter((block) => !block.valid).length === 2,
+            "unknown type not flagged"
+          );
+        },
+      },
+      {
+        name: "category with an unknown layout is read back as editorial",
+        run: async () => {
+          const [row] = await sql<{ id: number }[]>`
+            INSERT INTO categories (name, slug, layout, position)
+            VALUES ('Legacy', 'legacy', 'list', 99)
+            RETURNING id
+          `;
+          assert((await categories.getCategoryBySlug("legacy"))?.layout === "editorial", "getCategoryBySlug");
+          assert((await categories.getCategories()).find((c) => c.slug === "legacy")?.layout === "editorial", "getCategories");
+          const admin = (await categories.getCategoriesWithProjectCount()).find((c) => c.slug === "legacy");
+          assert(admin?.layout === "editorial", "getCategoriesWithProjectCount");
+          assert((await categories.deleteCategory(row.id)) === true, "cleanup");
         },
       },
       {

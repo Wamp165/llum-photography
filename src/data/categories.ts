@@ -1,6 +1,7 @@
 import { cache } from "react";
 import type { TransactionSql } from "postgres";
 import { sql } from "@/lib/db";
+import { toCategoryLayout } from "@/lib/constants";
 import { cachedSiteRead } from "@/lib/site-cache";
 import type {
   Category,
@@ -10,32 +11,40 @@ import type {
 
 // --- Public reads (cached, see cachedSiteRead) --------------------------------
 
+// The database does not check `layout`: unknown stored values fall back to "editorial".
+type CategoryRow = Omit<Category, "layout"> & { layout: string };
+
+function toCategory<T extends CategoryRow>(row: T): T & Pick<Category, "layout"> {
+  return { ...row, layout: toCategoryLayout(row.layout) };
+}
+
 export const getCategories = cache(
   cachedSiteRead("categories", async (): Promise<Category[]> => {
-    return await sql<Category[]>`
+    const rows = await sql<CategoryRow[]>`
       SELECT id, name, slug, position, layout
       FROM categories
       ORDER BY position ASC, id ASC
     `;
+    return rows.map(toCategory);
   })
 );
 
 export const getCategoryBySlug = cache(
   cachedSiteRead("category-by-slug", async (slug: string): Promise<Category | null> => {
-    const categories = await sql<Category[]>`
+    const rows = await sql<CategoryRow[]>`
       SELECT id, name, slug, position, layout
       FROM categories
       WHERE slug = ${slug}
       LIMIT 1
     `;
 
-    return categories[0] ?? null;
+    return rows[0] ? toCategory(rows[0]) : null;
   })
 );
 
 /** For the admin: every category with its number of projects (drafts included). */
 export async function getCategoriesWithProjectCount(): Promise<CategoryWithProjectCount[]> {
-  return await sql<CategoryWithProjectCount[]>`
+  const rows = await sql<(CategoryRow & { project_count: number })[]>`
     SELECT
       c.id, c.name, c.slug, c.position, c.layout,
       count(p.id)::int AS project_count
@@ -44,6 +53,7 @@ export async function getCategoriesWithProjectCount(): Promise<CategoryWithProje
     GROUP BY c.id
     ORDER BY c.position ASC, c.id ASC
   `;
+  return rows.map(toCategory);
 }
 
 // --- Writes (admin) ---------------------------------------------------------
