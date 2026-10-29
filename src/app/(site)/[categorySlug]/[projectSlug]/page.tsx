@@ -9,6 +9,7 @@ import { socialMetadata } from "@/lib/social-metadata";
 import { getProjectBlocks } from "@/data/project-blocks";
 import { formatProjectDate } from "@/lib/format-date";
 import { SIZES_FULL, lcpProps } from "@/lib/image-sizes";
+import ProjectLightbox from "@/components/ProjectLightbox";
 import BlockRenderer from "@/components/project-blocks/BlockRenderer";
 
 type Props = {
@@ -66,6 +67,23 @@ export default async function ProjectPage({
     ? undefined
     : blocks.find((block) => block.type !== "only_text_center")?.id;
 
+  // Photos of the blocks in page order. The cover is not part of the viewer.
+  const lightboxImages = [
+    ...new Set(
+      blocks.flatMap((block) => {
+        switch (block.type) {
+          case "only_text_center":
+            return [];
+          case "image_gallery":
+          case "carousel":
+            return block.content.images;
+          default:
+            return [block.content.image];
+        }
+      })
+    ),
+  ];
+
   return (
     <article className="site-container pb-24">
       {!project.is_published && (
@@ -106,14 +124,16 @@ export default async function ProjectPage({
         )}
       </header>
 
-      {blocks.map((block) => (
-        <BlockRenderer
-          key={block.id}
-          block={block}
-          projectTitle={project.title}
-          lcp={block.id === lcpBlockId}
-        />
-      ))}
+      <ProjectLightbox images={lightboxImages} label={project.title}>
+        {blocks.map((block) => (
+          <BlockRenderer
+            key={block.id}
+            block={block}
+            projectTitle={project.title}
+            lcp={block.id === lcpBlockId}
+          />
+        ))}
+      </ProjectLightbox>
     </article>
   );
 }
