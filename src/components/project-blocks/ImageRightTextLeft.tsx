@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LightboxImage from "@/components/LightboxImage";
 import { SIZES_HALF_GAP_10, lcpProps } from "@/lib/image-sizes";
 
 type Props = {
@@ -21,7 +21,7 @@ export default function ImageRightTextLeft({
           {text}
         </p>
 
-        <Image
+        <LightboxImage
           src={image}
           alt={alt}
           width={1200}
