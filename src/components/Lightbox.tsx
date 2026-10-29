@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useRef, type MouseEvent, type TouchEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent, type TouchEvent } from "react";
 import Image from "next/image";
 import { SIZES_LIGHTBOX } from "@/lib/image-sizes";
+import {
+  LIGHTBOX_IMAGE_HEIGHT,
+  LIGHTBOX_IMAGE_WIDTH,
+  preloadLightboxImage,
+  shownUrlOf,
+} from "@/lib/lightbox-images";
 
 type LightboxProps = {
   images: string[];
@@ -23,8 +29,20 @@ export default function Lightbox({ images, index, label, onIndexChange, onClose 
   const hasMany = count > 1;
   const touchStart = useRef<{ x: number; y: number } | null>(null);
 
+  const current = images[index];
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null);
+  const isLoaded = loadedSrc === current;
+  const placeholder = shownUrlOf(current);
+
   const previous = () => onIndexChange((index - 1 + count) % count);
   const next = () => onIndexChange((index + 1) % count);
+
+  // Download the neighbours now so the next arrow / swipe is instant.
+  useEffect(() => {
+    if (count < 2) return;
+    preloadLightboxImage(images[(index + 1) % count]);
+    preloadLightboxImage(images[(index - 1 + count) % count]);
+  }, [images, index, count]);
 
   // Latest handlers for the keydown listener, which is registered only once.
   const handlers = useRef({ previous, next, onClose, hasMany });
@@ -114,14 +132,30 @@ export default function Lightbox({ images, index, label, onIndexChange, onClose 
         </>
       )}
 
+      {placeholder && !isLoaded && (
+        // Variant the page already loaded (browser cache): shown until the big one arrives.
+        <Image
+          src={placeholder}
+          alt=""
+          aria-hidden
+          unoptimized
+          width={LIGHTBOX_IMAGE_WIDTH}
+          height={LIGHTBOX_IMAGE_HEIGHT}
+          className="pointer-events-none absolute left-4 top-4 h-[calc(100%-2rem)] w-[calc(100%-2rem)] select-none object-contain"
+        />
+      )}
+
       <Image
-        key={images[index]}
-        src={images[index]}
+        key={current}
+        src={current}
         alt={`${label} — photograph ${index + 1}${hasMany ? ` of ${count}` : ""}`}
-        width={2000}
-        height={1333}
+        width={LIGHTBOX_IMAGE_WIDTH}
+        height={LIGHTBOX_IMAGE_HEIGHT}
         sizes={SIZES_LIGHTBOX}
-        className="h-auto max-h-[92vh] w-auto max-w-full select-none object-contain"
+        loading="eager"
+        fetchPriority="high"
+        onLoad={() => setLoadedSrc(current)}
+        className="relative h-auto max-h-[92vh] w-auto max-w-full select-none object-contain"
       />
     </div>
   );

@@ -35,8 +35,11 @@ export const SIZES_GALLERY_3 =
 export const SIZES_CAROUSEL =
   "(max-width: 767px) calc(100vw - 8rem), (max-width: 1100px) calc(100vw - 10rem), (max-width: 1279px) 940px, 1020px";
 
-/** Full-screen lightbox: the image can fill the viewport width. */
-export const SIZES_LIGHTBOX = "100vw";
+/**
+ * Full-screen lightbox: 1rem padding per side and `max-h-[92vh]`. A 3:2 photo is at most
+ * 92vh * 1.5 = 138vh wide, so asking for more than that only downloads unseen pixels.
+ */
+export const SIZES_LIGHTBOX = "min(calc(100vw - 2rem), 138vh)";
 
 /**
  * Props for the first visible photo of a page (the likely LCP element): fetched right
