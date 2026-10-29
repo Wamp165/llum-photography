@@ -4,6 +4,7 @@ import { useState, type KeyboardEvent } from "react";
 import Image, { type ImageProps } from "next/image";
 import Lightbox from "./Lightbox";
 import { useProjectLightbox } from "./ProjectLightbox";
+import { preloadLightboxImage, rememberShownUrl } from "@/lib/lightbox-images";
 
 type LightboxImageProps = Omit<ImageProps, "src" | "alt"> & {
   src: string;
@@ -39,6 +40,12 @@ export default function LightboxImage({ className, ...props }: LightboxImageProp
         className={hidden ? className : `${className ?? ""} hover:cursor-pointer`}
         role={hidden ? undefined : "button"}
         tabIndex={hidden ? undefined : 0}
+        onLoad={(event) => {
+          rememberShownUrl(props.src, event.currentTarget.currentSrc);
+          props.onLoad?.(event);
+        }}
+        onPointerEnter={hidden ? undefined : () => preloadLightboxImage(props.src)}
+        onFocus={hidden ? undefined : () => preloadLightboxImage(props.src)}
         onClick={hidden ? undefined : openViewer}
         onKeyDown={hidden ? undefined : onImageKeyDown}
       />
