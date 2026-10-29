@@ -36,7 +36,7 @@ export default function LightboxImage({ className, ...props }: LightboxImageProp
       <Image
         {...props}
         alt={props.alt}
-        className={hidden ? className : `${className ?? ""} cursor-zoom-in`}
+        className={hidden ? className : `${className ?? ""} hover:cursor-pointer`}
         role={hidden ? undefined : "button"}
         tabIndex={hidden ? undefined : 0}
         onClick={hidden ? undefined : openViewer}
