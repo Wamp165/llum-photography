@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LightboxImage from "@/components/LightboxImage";
 import { SIZES_FULL, lcpProps } from "@/lib/image-sizes";
 
 type Props = {
@@ -22,7 +22,7 @@ export default function ImageCenterTextAbove({
         </p>
       </div>
 
-      <Image
+      <LightboxImage
         src={image}
         alt={alt}
         width={2000}

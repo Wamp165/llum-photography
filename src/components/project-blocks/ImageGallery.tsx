@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LightboxImage from "@/components/LightboxImage";
 import { SIZES_FULL, SIZES_GALLERY_2, SIZES_GALLERY_3, lcpProps } from "@/lib/image-sizes";
 
 type Props = {
@@ -24,7 +24,7 @@ export default function ImageGallery({
   if (images.length === 1) {
     return (
       <section className="my-24">
-        <Image
+        <LightboxImage
           src={images[0]}
           alt={`${projectTitle} — photograph 1`}
           width={2000}
@@ -45,7 +45,7 @@ export default function ImageGallery({
       className={`my-24 grid grid-cols-1 items-start gap-6 ${columns}`}
     >
       {images.map((image, index) => (
-        <Image
+        <LightboxImage
           key={`${index}-${image}`}
           src={image}
           alt={`${projectTitle} — photograph ${index + 1}`}

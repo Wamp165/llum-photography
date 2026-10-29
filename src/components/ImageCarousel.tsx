@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import LightboxImage from "./LightboxImage";
 import { SIZES_CAROUSEL, SIZES_FULL, lcpProps } from "@/lib/image-sizes";
 
 type ImageCarouselProps = {
@@ -80,7 +80,7 @@ export default function ImageCarousel({
       {/* Mounted images share one grid cell, so the box takes the tallest one's height. */}
       <div className={`grid ${hasMany ? "mx-10 xl:mx-0" : ""}`}>
         {images.map((image, index) => isMounted(index) && (
-          <Image
+          <LightboxImage
             key={`${index}-${image}`}
             src={image}
             alt={`${altLabel} — photograph ${index + 1}${showTotal ? ` of ${count}` : ""}`}

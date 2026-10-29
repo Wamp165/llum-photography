@@ -1,4 +1,4 @@
-import Image from "next/image";
+import LightboxImage from "@/components/LightboxImage";
 import { SIZES_HALF_GAP_10, lcpProps } from "@/lib/image-sizes";
 
 type Props = {
@@ -17,7 +17,7 @@ export default function ImageLeftTextRight({
   return (
     <section className="my-24">
       <div className="grid items-center gap-10 md:grid-cols-2">
-        <Image
+        <LightboxImage
           src={image}
           alt={alt}
           width={1200}

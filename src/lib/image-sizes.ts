@@ -35,6 +35,9 @@ export const SIZES_GALLERY_3 =
 export const SIZES_CAROUSEL =
   "(max-width: 767px) calc(100vw - 8rem), (max-width: 1100px) calc(100vw - 10rem), (max-width: 1279px) 940px, 1020px";
 
+/** Full-screen lightbox: the image can fill the viewport width. */
+export const SIZES_LIGHTBOX = "100vw";
+
 /**
  * Props for the first visible photo of a page (the likely LCP element): fetched right
  * away with high priority. Every other image keeps next/image's default lazy loading.
