@@ -11,6 +11,7 @@ export default async function Home() {
         images={settings.homepage_images ?? []}
         altLabel={settings.photographer_name}
         showTotal
+        lightbox={false}
         lcp
       />
     </div>

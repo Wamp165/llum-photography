@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import LightboxImage from "./LightboxImage";
 import { SIZES_CAROUSEL, SIZES_FULL, lcpProps } from "@/lib/image-sizes";
 
@@ -11,6 +12,8 @@ type ImageCarouselProps = {
   /** Alt text is "<altLabel> — photograph <n>" (plus " of <total>" with `showTotal`). */
   altLabel: string;
   showTotal?: boolean;
+  /** Photos open full screen on click (default). The home page turns it off. */
+  lightbox?: boolean;
 };
 
 const ARROW_CLASSES =
@@ -21,6 +24,7 @@ export default function ImageCarousel({
   lcp = false,
   altLabel,
   showTotal = false,
+  lightbox = true,
 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   // Images already shown stay mounted so going back never reloads them.
@@ -32,6 +36,7 @@ export default function ImageCarousel({
     return null;
   }
 
+  const Photo = lightbox ? LightboxImage : Image;
   const hasMany = images.length > 1;
   const count = images.length;
 
@@ -80,7 +85,7 @@ export default function ImageCarousel({
       {/* Mounted images share one grid cell, so the box takes the tallest one's height. */}
       <div className={`grid ${hasMany ? "mx-10 xl:mx-0" : ""}`}>
         {images.map((image, index) => isMounted(index) && (
-          <LightboxImage
+          <Photo
             key={`${index}-${image}`}
             src={image}
             alt={`${altLabel} — photograph ${index + 1}${showTotal ? ` of ${count}` : ""}`}
