@@ -142,7 +142,7 @@ Source of truth: `db/migrations/` (`001_initial_schema.sql` is the full schema; 
 go in new numbered files). Current state:
 
 - **`settings`** — exactly one row, `id = 1` (CHECK), created by the first migration with a
-  placeholder name. Photographer name, bio, profile picture, Instagram handle, contact email,
+  placeholder name. Photographer name, bio, profile picture, Instagram handle, Substack name (`name.substack.com`), contact email, location,
   `homepage_images` (JSONB array of URLs). `getSettings()` throws if the row is missing.
 - **`categories`** — sections in the menu. `slug` unique (some slugs are reserved, see constants),
   `position` 1..n, `layout` in `CATEGORY_LAYOUTS` (enforced by Zod, no CHECK;

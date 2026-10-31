@@ -54,21 +54,49 @@ export default async function AboutPage() {
       <hr className="mx-auto my-16 w-1/2 border-neutral-800" />
 
       <section className="space-y-8 text-center text-sm">
-        {settings.instagram && (
+        {settings.location && (
+          <div>
+            <h2 className="mb-2 text-base font-semibold">
+              Based in:
+            </h2>
+
+            <p>{settings.location}</p>
+          </div>
+        )}
+
+        {(settings.instagram || settings.substack) && (
           <div>
             <h2 className="mb-2 text-base font-semibold">
               Find me on:
             </h2>
 
-            <a
-              href={`https://instagram.com/${settings.instagram}`}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:underline"
-            >
-              <span className="font-semibold text-neutral-500">Instagram:</span>{" "}
-              {settings.instagram}
-            </a>
+            {settings.instagram && (
+              <div>
+                <a
+                  href={`https://instagram.com/${settings.instagram}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:underline"
+                >
+                  <span className="font-semibold text-neutral-500">Instagram:</span>{" "}
+                  {settings.instagram}
+                </a>
+              </div>
+            )}
+
+            {settings.substack && (
+              <div>
+                <a
+                  href={`https://${settings.substack}.substack.com`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:underline"
+                >
+                  <span className="font-semibold text-neutral-500">Substack:</span>{" "}
+                  {settings.substack}
+                </a>
+              </div>
+            )}
           </div>
         )}
 

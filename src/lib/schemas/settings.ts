@@ -26,6 +26,26 @@ export const settingsFormSchema = z.object({
       )
       .transform((value) => value || null)
   ),
+  // Accept a pasted address too; store the bare publication name.
+  substack: formString.pipe(
+    z
+      .string()
+      .transform((value) =>
+        value
+          .trim()
+          .toLowerCase()
+          .replace(/^https?:\/\//, "")
+          .replace(/\.substack\.com.*$/, "")
+      )
+      .pipe(
+        z.union([
+          z.literal(""),
+          z.string().regex(/^[a-z0-9-]{1,63}$/, "Enter the name in name.substack.com, e.g. llumphoto"),
+        ])
+      )
+      .transform((value) => value || null)
+  ),
   contact_email: optionalEmail,
+  location: optionalText("Location", 100),
   homepage_images: jsonField(z.array(cloudinaryImageUrl).default([])),
 });
