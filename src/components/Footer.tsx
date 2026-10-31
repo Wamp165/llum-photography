@@ -1,17 +1,14 @@
 type Props = {
   photographerName: string;
-  location: string | null;
 };
 
-export default function Footer({ photographerName, location }: Props) {
+export default function Footer({ photographerName }: Props) {
   const year = new Date().getFullYear();
-  const place = location?.trim();
 
   return (
-    <footer className="site-container pb-8 pt-16 text-right text-sm text-neutral-600">
+    <footer className="site-container pb-8 pt-16 text-left text-xs text-neutral-600 sm:text-sm">
       <p>
-        {photographerName} © {year}
-        {place ? ` | ${place}` : null}
+        © {year} | {photographerName}
       </p>
     </footer>
   );
