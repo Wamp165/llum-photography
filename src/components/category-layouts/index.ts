@@ -5,7 +5,6 @@ import type {
 } from "@/types/category-layout";
 import Editorial from "./Editorial";
 import Grid from "./Grid";
-import Masonry from "./Masonry";
 import Featured from "./Featured";
 
 export const categoryLayouts: Record<
@@ -14,6 +13,5 @@ export const categoryLayouts: Record<
 > = {
   editorial: Editorial,
   grid: Grid,
-  masonry: Masonry,
   featured: Featured,
 };
