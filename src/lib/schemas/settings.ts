@@ -3,6 +3,7 @@ import {
   cloudinaryImageUrl,
   jsonField,
   optionalEmail,
+  optionalHttpsUrl,
   optionalImageUrl,
   optionalText,
   requiredText,
@@ -26,6 +27,8 @@ export const settingsFormSchema = z.object({
       )
       .transform((value) => value || null)
   ),
+  substack: optionalHttpsUrl("Substack", 300),
   contact_email: optionalEmail,
+  location: optionalText("Location", 100),
   homepage_images: jsonField(z.array(cloudinaryImageUrl).default([])),
 });

@@ -18,7 +18,9 @@ async function main() {
       bio: "Fake bio used by the CI seed.",
       profile_picture: image("sample"),
       instagram: null,
+      substack: null,
       contact_email: "ci@example.com",
+      location: "Test City",
       homepage_images: [image("sample")],
     });
 

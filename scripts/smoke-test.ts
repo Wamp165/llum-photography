@@ -147,6 +147,20 @@ async function main() {
         },
       },
       {
+        name: "optionalHttpsUrl accepts https URLs and rejects the rest",
+        run: () => {
+          const parse = (substack: string) =>
+            settingsFormSchema.safeParse(form({ photographer_name: "X", substack }));
+          const empty = parse("");
+          assert(empty.success && empty.data.substack === null, "empty substack not null");
+          const ok = parse("https://zuzanna.substack.com");
+          assert(ok.success && ok.data.substack === "https://zuzanna.substack.com", "valid https URL rejected");
+          for (const bad of ["http://zuzanna.substack.com", "zuzanna.substack.com", "javascript:alert(1)"]) {
+            assert(!parse(bad).success, `accepted ${bad}`);
+          }
+        },
+      },
+      {
         name: "form schemas: block JSON, dates, slugs, reserved slugs",
         run: () => {
           const block = blockSchemas.blockFormSchema.safeParse(

@@ -35,6 +35,10 @@ export default function SettingsForm({ settings }: Props) {
           {(id) => <Input id={id} name="instagram" defaultValue={settings.instagram ?? ""} />}
         </Field>
 
+        <Field label="Substack" name="substack" hint="Full URL, e.g. https://name.substack.com.">
+          {(id) => <Input id={id} type="url" name="substack" defaultValue={settings.substack ?? ""} />}
+        </Field>
+
         <Field label="Contact email" name="contact_email">
           {(id) => (
             <Input
@@ -44,6 +48,14 @@ export default function SettingsForm({ settings }: Props) {
               defaultValue={settings.contact_email ?? ""}
             />
           )}
+        </Field>
+
+        <Field
+          label="Location"
+          name="location"
+          hint="City or country. Shown on the About page and in the footer."
+        >
+          {(id) => <Input id={id} name="location" defaultValue={settings.location ?? ""} />}
         </Field>
       </div>
 

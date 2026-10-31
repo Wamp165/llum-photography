@@ -11,7 +11,9 @@ export const getSettings = cache(cachedSiteRead("settings", async (): Promise<Se
       bio,
       profile_picture,
       instagram,
+      substack,
       contact_email,
+      location,
       homepage_images
     FROM settings
     WHERE id = 1
@@ -33,7 +35,9 @@ export async function updateSettings(input: SettingsInput): Promise<void> {
       bio = ${input.bio},
       profile_picture = ${input.profile_picture},
       instagram = ${input.instagram},
+      substack = ${input.substack},
       contact_email = ${input.contact_email},
+      location = ${input.location},
       homepage_images = ${sql.json(input.homepage_images)}
     WHERE id = 1
   `;
