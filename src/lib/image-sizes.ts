@@ -19,7 +19,7 @@ export const SIZES_HALF_GAP_16 =
 export const SIZES_HALF_GAP_12 =
   "(max-width: 767px) calc(100vw - 3rem), (max-width: 1100px) calc((100vw - 8rem) / 2), 486px";
 
-/** One column, two from md, three from lg, 3rem gaps (Grid, Masonry). */
+/** One column, two from md, three from lg, 3rem gaps (Grid). */
 export const SIZES_GRID =
   "(max-width: 767px) calc(100vw - 3rem), (max-width: 1023px) calc((100vw - 8rem) / 2), (max-width: 1100px) calc((100vw - 11rem) / 3), 308px";
 

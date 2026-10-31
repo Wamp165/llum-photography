@@ -19,7 +19,6 @@ type Props = {
 const LAYOUT_LABELS: Record<CategoryLayout, string> = {
   editorial: "Editorial — one project per row, text beside the cover",
   grid: "Grid — up to 3 columns",
-  masonry: "Masonry — columns with free heights",
   featured: "Featured — first project large, the rest below",
 };
 

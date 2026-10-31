@@ -4,7 +4,7 @@ import type { CategoryLayout } from "@/types/category-layout";
 // write and the database does not check them (unknown stored values are handled on read).
 
 /** categories.layout */
-export const CATEGORY_LAYOUTS = ["editorial", "grid", "masonry", "featured"] as const;
+export const CATEGORY_LAYOUTS = ["editorial", "grid", "featured"] as const;
 
 /** project_blocks.type */
 export const BLOCK_TYPES = [
