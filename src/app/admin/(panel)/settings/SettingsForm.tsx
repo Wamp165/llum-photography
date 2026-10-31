@@ -53,7 +53,7 @@ export default function SettingsForm({ settings }: Props) {
         <Field
           label="Location"
           name="location"
-          hint="City or country. Shown on the About page and in the footer."
+          hint="City or country. Shown on the About page."
         >
           {(id) => <Input id={id} name="location" defaultValue={settings.location ?? ""} />}
         </Field>

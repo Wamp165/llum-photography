@@ -86,7 +86,6 @@ export default async function RootLayout({
           photographerName={
             settings.photographer_name
           }
-          location={settings.location}
         />
       </body>
     </html>
