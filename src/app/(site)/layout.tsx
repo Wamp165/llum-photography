@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Cormorant_Garamond, Montserrat, Open_Sans } from "next/font/google";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { env } from "@/lib/env";
 import { socialMetadata } from "@/lib/social-metadata";
 import { getSettings } from "@/data/settings";
@@ -80,6 +81,13 @@ export default async function RootLayout({
         <main className="flex-1">
           {children}
         </main>
+
+        <Footer
+          photographerName={
+            settings.photographer_name
+          }
+          location={settings.location}
+        />
       </body>
     </html>
   );
