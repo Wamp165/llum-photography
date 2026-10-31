@@ -147,6 +147,19 @@ async function main() {
         },
       },
       {
+        name: "settings schema: substack name",
+        run: () => {
+          const parse = (value: string) => settingsFormSchema.shape.substack.safeParse(value);
+          const empty = parse("");
+          assert(empty.success && empty.data === null, "empty substack should be null");
+          for (const value of ["zuzanna", "Zuzanna.substack.com", "https://zuzanna.substack.com/"]) {
+            const result = parse(value);
+            assert(result.success && result.data === "zuzanna", `substack ${value} not normalised`);
+          }
+          assert(!parse("zu zanna").success, "substack with a space accepted");
+        },
+      },
+      {
         name: "form schemas: block JSON, dates, slugs, reserved slugs",
         run: () => {
           const block = blockSchemas.blockFormSchema.safeParse(

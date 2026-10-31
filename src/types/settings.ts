@@ -7,7 +7,9 @@ export type Settings = {
   bio: string | null;
   profile_picture: string | null;
   instagram: string | null;
+  substack: string | null;
   contact_email: string | null;
+  location: string | null;
   homepage_images: string[] | null;
 };
 export type SettingsInput = z.infer<typeof settingsFormSchema>;
