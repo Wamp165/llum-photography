@@ -49,6 +49,7 @@ async function main() {
     const constants = await import("@/lib/constants");
     const blockSchemas = await import("@/lib/schemas/project-block");
     const { settingsFormSchema } = await import("@/lib/schemas/settings");
+    const { optionalHttpsUrl } = await import("@/lib/schemas/common");
     const { categoryFormSchema } = await import("@/lib/schemas/category");
     const { projectFormSchema } = await import("@/lib/schemas/project");
     const { isCloudinaryImageUrl, isSlug } = await import("@/lib/schemas/common");
@@ -144,6 +145,19 @@ async function main() {
             })
           );
           assert(!settings.success, "settings accepted foreign URLs");
+        },
+      },
+      {
+        name: "optionalHttpsUrl: empty → null, https only",
+        run: () => {
+          const schema = optionalHttpsUrl("Substack", 300);
+          const empty = schema.safeParse("");
+          assert(empty.success && empty.data === null, "empty string not converted to null");
+          const ok = schema.safeParse("https://name.substack.com");
+          assert(ok.success && ok.data === "https://name.substack.com", "valid https URL rejected");
+          assert(!schema.safeParse("http://name.substack.com").success, "http URL accepted");
+          assert(!schema.safeParse("name.substack.com").success, "bare domain accepted");
+          assert(!schema.safeParse(`https://a.com/${"x".repeat(300)}`).success, "too long URL accepted");
         },
       },
       {

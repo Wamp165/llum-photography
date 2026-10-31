@@ -67,6 +67,21 @@ export const optionalImageUrl = formString.pipe(
   z.union([z.literal(""), cloudinaryImageUrl]).transform((value) => value || null)
 );
 
+/** Empty → null. Only https:// URLs. */
+export function optionalHttpsUrl(label: string, max: number) {
+  return formString.pipe(
+    z
+      .union([
+        z.literal(""),
+        z
+          .string()
+          .max(max, `${label} is too long (max ${max} characters).`)
+          .pipe(z.url({ protocol: /^https$/, error: "Enter a full https:// URL." })),
+      ])
+      .transform((value) => value || null)
+  );
+}
+
 /** A hidden input holding JSON (image lists, block content). */
 export function jsonField<T extends z.ZodType>(schema: T) {
   return formString.transform((value, ctx) => {
