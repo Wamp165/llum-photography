@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
-import { Cormorant_Garamond, Montserrat, Open_Sans } from "next/font/google";
+import { albertSans, montserrat } from "@/app/fonts";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { env } from "@/lib/env";
@@ -10,25 +10,6 @@ import { getSettings } from "@/data/settings";
 import { getCategories } from "@/data/categories";
 
 import "./globals.css";
-
-const openSans = Open_Sans({
-  variable: "--font-open-sans",
-  subsets: ["latin", "latin-ext"],
-});
-
-// Editorial serif for the navbar and category/project titles.
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "500", "600"],
-});
-
-// Used only for the logo (photographer name).
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin", "latin-ext"],
-  weight: ["400", "500"],
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSettings();
@@ -78,7 +59,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${openSans.variable} ${cormorant.variable} ${montserrat.variable} h-full antialiased`}
+      className={`${albertSans.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Navbar

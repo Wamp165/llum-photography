@@ -31,13 +31,13 @@ export default function Featured({
           />
         )}
 
-        <div className="mx-auto mt-6 max-w-xl text-center">
-          <h2 className="font-display text-2xl font-medium">
+        <div className="mt-4 max-w-prose">
+          <h2 className="text-title font-medium">
             {featured.title}
           </h2>
 
           {featured.description && (
-            <p className="mt-2 text-sm leading-relaxed text-neutral-600">
+            <p className="mt-2 text-body text-muted">
               {featured.description}
             </p>
           )}
@@ -63,7 +63,7 @@ export default function Featured({
                 />
               )}
 
-              <p className="mt-3 text-sm">
+              <p className="mt-3 text-meta">
                 {project.title}
               </p>
             </Link>

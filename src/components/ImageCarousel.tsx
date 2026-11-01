@@ -17,7 +17,7 @@ type ImageCarouselProps = {
 };
 
 const ARROW_CLASSES =
-  "absolute top-1/2 z-10 -translate-y-1/2 px-2 text-6xl font-extralight text-neutral-400 transition-colors duration-200 hover:text-neutral-800";
+  "absolute top-1/2 z-10 -translate-y-1/2 px-2 text-6xl font-extralight text-muted transition-colors duration-200 hover:text-foreground";
 
 export default function ImageCarousel({
   images,

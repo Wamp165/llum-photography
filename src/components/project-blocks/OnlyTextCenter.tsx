@@ -8,7 +8,7 @@ export default function OnlyTextCenter({
   return (
     <section className="my-24">
       <div className="mx-auto max-w-2xl">
-        <p className="whitespace-pre-line leading-8">
+        <p className="max-w-prose whitespace-pre-line text-body">
           {text}
         </p>
       </div>

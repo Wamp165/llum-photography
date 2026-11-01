@@ -39,24 +39,22 @@ export default async function AboutPage() {
         )}
 
         <div>
-          <h1 className="mb-6 text-center font-semibold">
+          <h1 className="mb-6 text-display font-medium">
             About me
           </h1>
 
           {settings.bio && (
-            <p className="whitespace-pre-line break-words leading-7">
+            <p className="max-w-prose whitespace-pre-line break-words text-body">
               {settings.bio}
             </p>
           )}
         </div>
       </section>
 
-      <hr className="mx-auto my-16 w-1/2 border-neutral-800" />
-
-      <section className="space-y-8 text-center text-sm">
+      <section className="mt-16 space-y-8 text-body">
         {settings.location && (
           <div>
-            <h2 className="mb-2 text-base font-semibold">
+            <h2 className="mb-1 text-meta font-normal uppercase tracking-[0.08em] text-muted">
               Based in:
             </h2>
 
@@ -66,7 +64,7 @@ export default async function AboutPage() {
 
         {(settings.instagram || settings.substack) && (
           <div>
-            <h2 className="mb-2 text-base font-semibold">
+            <h2 className="mb-1 text-meta font-normal uppercase tracking-[0.08em] text-muted">
               Find me on:
             </h2>
 
@@ -78,7 +76,7 @@ export default async function AboutPage() {
                   rel="noreferrer"
                   className="hover:underline"
                 >
-                  <span className="font-semibold text-neutral-500">Instagram:</span>{" "}
+                  <span className="font-normal text-muted">Instagram:</span>{" "}
                   {settings.instagram}
                 </a>
               </div>
@@ -92,7 +90,7 @@ export default async function AboutPage() {
                   rel="noreferrer"
                   className="hover:underline"
                 >
-                  <span className="font-semibold text-neutral-500">Substack:</span>{" "}
+                  <span className="font-normal text-muted">Substack:</span>{" "}
                   {settings.substack}
                 </a>
               </div>
@@ -102,7 +100,7 @@ export default async function AboutPage() {
 
         {settings.contact_email && (
           <div>
-            <h2 className="mb-2 text-base font-semibold">
+            <h2 className="mb-1 text-meta font-normal uppercase tracking-[0.08em] text-muted">
               Email me:
             </h2>
 

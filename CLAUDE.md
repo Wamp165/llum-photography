@@ -52,6 +52,10 @@ closed set on purpose. Add new ones only when asked, following the recipes below
     in `src/lib/image-sizes.ts` in the same change. Each constant must match the image's real
     rendered width at phone, tablet and desktop widths. New public images use a constant from that
     file (add one if needed), never an inline sizes string.
+12. **Typography (public site).** Albert Sans for all text, Montserrat only for the logo
+    (`src/app/fonts.ts`). Only the scale `text-meta/body/title/display` (globals.css), weights
+    400/500, colours `foreground`/`muted`, left-aligned text (centering only on error/404 pages).
+    No raw `text-sm/base/xl`, `font-semibold` or `text-neutral-*` on public pages.
 
 ## Folder map
 

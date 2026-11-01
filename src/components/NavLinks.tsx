@@ -39,7 +39,7 @@ export default function NavLinks({ links }: Props) {
 
       <ul
         id="site-menu"
-        className={`${isOpen ? "flex" : "hidden"} flex-col items-center gap-y-4 font-display text-xl font-medium tracking-wide md:flex md:flex-1 md:flex-row md:flex-nowrap md:justify-between md:gap-y-0 md:pl-16 lg:pl-24`}
+        className={`${isOpen ? "flex" : "hidden"} flex-col items-center gap-y-4 text-body md:flex md:flex-row md:flex-nowrap md:gap-x-7 md:gap-y-0`}
       >
         {links.map(({ href, label }) => {
           const isActive =
@@ -51,7 +51,9 @@ export default function NavLinks({ links }: Props) {
                 href={href}
                 aria-current={isActive ? "page" : undefined}
                 className={
-                  isActive ? "font-semibold" : "hover:text-neutral-500"
+                  isActive
+                    ? "underline decoration-1 underline-offset-[5px]"
+                    : "text-muted transition-colors hover:text-foreground"
                 }
               >
                 {label}

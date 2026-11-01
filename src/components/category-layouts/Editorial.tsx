@@ -32,12 +32,12 @@ export default function Editorial({
             )}
 
             <div className="max-w-xs">
-              <h2 className="mb-4 font-display text-2xl font-semibold">
+              <h2 className="mb-4 text-title font-medium">
                 {project.title}
               </h2>
 
               {project.description && (
-                <p className="text-sm leading-relaxed text-neutral-600">
+                <p className="text-body text-muted">
                   {project.description}
                 </p>
               )}
