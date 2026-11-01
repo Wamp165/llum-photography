@@ -31,7 +31,7 @@ export default function Editorial({
               </div>
             )}
 
-            <div className="max-w-xs">
+            <div>
               <h2 className="mb-4 font-display text-title font-semibold">
                 {project.title}
               </h2>
