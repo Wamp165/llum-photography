@@ -11,11 +11,11 @@ export default function SiteError({ error, retry }: { error: Error; retry: () =>
 
   return (
     <div className="mx-auto max-w-xl px-8 py-24 text-center">
-      <h1 className="mb-4 text-sm uppercase tracking-wide">Something went wrong</h1>
-      <button type="button" onClick={() => retry()} className="mr-6 text-sm underline">
+      <h1 className="mb-4 text-meta uppercase tracking-wide">Something went wrong</h1>
+      <button type="button" onClick={() => retry()} className="mr-6 text-meta underline">
         Try again
       </button>
-      <Link href="/" className="text-sm underline">
+      <Link href="/" className="text-meta underline">
         Back to the homepage
       </Link>
     </div>

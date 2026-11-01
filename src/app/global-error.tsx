@@ -15,12 +15,12 @@ export default function GlobalError({ error, retry }: { error: Error; retry: () 
       <body className="flex min-h-screen items-center justify-center px-8">
         <title>Something went wrong</title>
         <div className="text-center">
-          <h1 className="mb-4 text-sm uppercase tracking-wide">Something went wrong</h1>
-          <button type="button" onClick={() => retry()} className="mr-6 text-sm underline">
+          <h1 className="mb-4 text-meta uppercase tracking-wide">Something went wrong</h1>
+          <button type="button" onClick={() => retry()} className="mr-6 text-meta underline">
             Try again
           </button>
           {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-          <a href="/" className="text-sm underline">
+          <a href="/" className="text-meta underline">
             Back to the homepage
           </a>
         </div>

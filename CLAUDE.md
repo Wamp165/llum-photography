@@ -52,6 +52,10 @@ closed set on purpose. Add new ones only when asked, following the recipes below
     in `src/lib/image-sizes.ts` in the same change. Each constant must match the image's real
     rendered width at phone, tablet and desktop widths. New public images use a constant from that
     file (add one if needed), never an inline sizes string.
+12. Public fonts: **Albert Sans** for all text (`font-sans` and `font-display` both map to it) and
+    **Montserrat** only for the logo (`font-logo`). Public pages use only `text-meta`, `text-body`,
+    `text-title` and `text-display` for font sizes (tokens in `(site)/globals.css`); never
+    `text-xs/sm/base/lg/xl/2xl`. The logo keeps its own size.
 
 ## Folder map
 

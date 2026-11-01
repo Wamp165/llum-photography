@@ -126,7 +126,7 @@ export default function Lightbox({ images, index, label, onIndexChange, onClose 
           >
             ›
           </button>
-          <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs tracking-widest text-white/70">
+          <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-meta tracking-widest text-white/70">
             {index + 1} / {count}
           </p>
         </>

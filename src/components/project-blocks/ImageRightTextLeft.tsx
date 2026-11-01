@@ -17,7 +17,7 @@ export default function ImageRightTextLeft({
   return (
     <section className="my-24">
       <div className="grid items-center gap-10 md:grid-cols-2">
-        <p className="order-2 whitespace-pre-line px-4 text-center text-sm leading-7 md:order-1">
+        <p className="order-2 whitespace-pre-line px-4 text-center text-body md:order-1">
           {text}
         </p>
 

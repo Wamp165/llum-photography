@@ -87,7 +87,7 @@ export default async function ProjectPage({
   return (
     <article className="site-container pb-24">
       {!project.is_published && (
-        <p className="mt-4 border-y border-neutral-200 py-2 text-center text-xs uppercase tracking-wide text-neutral-500">
+        <p className="mt-4 border-y border-neutral-200 py-2 text-center text-meta uppercase tracking-wide text-neutral-500">
           Draft — not public
         </p>
       )}
@@ -105,12 +105,12 @@ export default async function ProjectPage({
       )}
 
       <header className="mt-10">
-        <h1 className="mb-2 text-xl font-semibold">
+        <h1 className="mb-2 text-display font-semibold">
           {project.title}
         </h1>
 
         {project.project_date && (
-          <p className="mb-8 text-sm text-neutral-400">
+          <p className="mb-8 text-meta text-neutral-400">
             <time dateTime={project.project_date}>
               {formatProjectDate(project.project_date)}
             </time>
@@ -118,7 +118,7 @@ export default async function ProjectPage({
         )}
 
         {project.introduction && (
-          <p className="whitespace-pre-line leading-8">
+          <p className="whitespace-pre-line text-body">
             {project.introduction}
           </p>
         )}
