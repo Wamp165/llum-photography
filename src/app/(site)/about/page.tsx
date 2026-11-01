@@ -39,12 +39,12 @@ export default async function AboutPage() {
         )}
 
         <div>
-          <h1 className="mb-6 text-center font-semibold">
+          <h1 className="mb-6 text-center text-display font-semibold">
             About me
           </h1>
 
           {settings.bio && (
-            <p className="whitespace-pre-line break-words leading-7">
+            <p className="whitespace-pre-line break-words text-body">
               {settings.bio}
             </p>
           )}
@@ -53,10 +53,10 @@ export default async function AboutPage() {
 
       <hr className="mx-auto my-16 w-1/2 border-neutral-800" />
 
-      <section className="space-y-8 text-center text-sm">
+      <section className="space-y-8 text-center text-body">
         {settings.location && (
           <div>
-            <h2 className="mb-2 text-base font-semibold">
+            <h2 className="mb-2 text-title font-semibold">
               Based in:
             </h2>
 
@@ -66,7 +66,7 @@ export default async function AboutPage() {
 
         {(settings.instagram || settings.substack) && (
           <div>
-            <h2 className="mb-2 text-base font-semibold">
+            <h2 className="mb-2 text-title font-semibold">
               Find me on:
             </h2>
 
@@ -102,7 +102,7 @@ export default async function AboutPage() {
 
         {settings.contact_email && (
           <div>
-            <h2 className="mb-2 text-base font-semibold">
+            <h2 className="mb-2 text-title font-semibold">
               Email me:
             </h2>
 

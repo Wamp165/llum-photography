@@ -17,7 +17,7 @@ export default function ImageCenterTextAbove({
   return (
     <section className="my-24">
       <div className="mx-auto mb-8 max-w-2xl">
-        <p className="whitespace-pre-line text-center text-sm leading-7">
+        <p className="whitespace-pre-line text-center text-body">
           {text}
         </p>
       </div>

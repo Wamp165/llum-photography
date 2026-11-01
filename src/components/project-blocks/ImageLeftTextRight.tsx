@@ -27,7 +27,7 @@ export default function ImageLeftTextRight({
           className="h-auto w-full"
         />
 
-        <p className="whitespace-pre-line px-4 text-center text-sm leading-7">
+        <p className="whitespace-pre-line px-4 text-center text-body">
           {text}
         </p>
       </div>

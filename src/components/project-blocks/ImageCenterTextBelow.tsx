@@ -27,7 +27,7 @@ export default function ImageCenterTextBelow({
       />
 
       <div className="mx-auto mt-6 max-w-2xl">
-        <p className="whitespace-pre-line text-center text-sm leading-7">
+        <p className="whitespace-pre-line text-center text-body">
           {text}
         </p>
       </div>

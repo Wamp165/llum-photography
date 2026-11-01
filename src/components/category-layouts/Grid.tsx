@@ -29,7 +29,7 @@ export default function Grid({
               />
             )}
 
-            <p className="mt-3 text-sm">
+            <p className="mt-3 text-meta">
               {project.title}
             </p>
           </Link>
