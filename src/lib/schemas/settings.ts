@@ -13,6 +13,7 @@ export const settingsFormSchema = z.object({
   photographer_name: requiredText("Name", 200),
   bio: optionalText("Bio", 10000),
   profile_picture: optionalImageUrl,
+  favicon: optionalImageUrl,
   // Accept "@handle" too; store the bare handle.
   instagram: formString.pipe(
     z

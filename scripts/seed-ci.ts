@@ -17,6 +17,7 @@ async function main() {
       photographer_name: "CI Photographer",
       bio: "Fake bio used by the CI seed.",
       profile_picture: image("sample"),
+      favicon: null,
       instagram: null,
       substack: null,
       contact_email: "ci@example.com",

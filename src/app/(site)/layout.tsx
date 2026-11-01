@@ -4,6 +4,7 @@ import { Cormorant_Garamond, Montserrat, Open_Sans } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { env } from "@/lib/env";
+import { siteIconUrl } from "@/lib/site-icon";
 import { socialMetadata } from "@/lib/social-metadata";
 import { getSettings } from "@/data/settings";
 import { getCategories } from "@/data/categories";
@@ -34,6 +35,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const description = `Photography portfolio of ${settings.photographer_name}`;
 
+  const favicon = settings.favicon;
+
   return {
     // The production URL already configured for auth; makes og:image URLs absolute.
     metadataBase: new URL(env.BETTER_AUTH_URL),
@@ -42,6 +45,13 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${settings.photographer_name}`,
     },
     description,
+    // No favicon: no `icons` key at all, browsers show their default.
+    ...(favicon && {
+      icons: {
+        icon: [{ url: siteIconUrl(favicon, 32), sizes: "32x32", type: "image/png" }],
+        apple: [{ url: siteIconUrl(favicon, 180), sizes: "180x180", type: "image/png" }],
+      },
+    }),
     ...socialMetadata({
       siteName: settings.photographer_name,
       title: settings.photographer_name,

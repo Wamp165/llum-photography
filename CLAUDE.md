@@ -69,6 +69,7 @@ src/
     api/sign-cloudinary-params/  Signs admin uploads (admin only).
     global-not-found.tsx         404 for unmatched URLs (two root layouts → experimental.globalNotFound).
     robots.ts                    robots.txt (disallows /admin and /api).
+    manifest.ts                  Web app manifest (name + icons from settings).
     global-error.tsx             Error page when a root layout fails (e.g. database down). Own <html>.
     (site)/error.tsx             Error page inside the site layout (navbar stays).
     admin/error.tsx              Error card for the admin (panel and login).
@@ -88,6 +89,7 @@ src/
     constants.ts       CATEGORY_LAYOUTS, BLOCK_TYPES, ... (source of truth).
     schemas/           Zod schemas: common, project-block, settings, category, project.
     image-sizes.ts     sizes for public images + lcpProps()
+    site-icon.ts       siteIconUrl(): favicon PNG URLs (c_pad, never cropped).
     slugify.ts  revalidate.ts  format-date.ts  utils.ts (shadcn `cn`)
   types/               Row types and shared types.
   proxy.ts             Optimistic redirect of /admin/* without a session cookie.
@@ -142,7 +144,7 @@ Source of truth: `db/migrations/` (`001_initial_schema.sql` is the full schema; 
 go in new numbered files). Current state:
 
 - **`settings`** — exactly one row, `id = 1` (CHECK), created by the first migration with a
-  placeholder name. Photographer name, bio, profile picture, Instagram handle, Substack name (`name.substack.com`), contact email, location,
+  placeholder name. Photographer name, bio, profile picture, `favicon` (Cloudinary URL, nullable), Instagram handle, Substack name (`name.substack.com`), contact email, location,
   `homepage_images` (JSONB array of URLs). `getSettings()` throws if the row is missing.
 - **`categories`** — sections in the menu. `slug` unique (some slugs are reserved, see constants),
   `position` 1..n, `layout` in `CATEGORY_LAYOUTS` (enforced by Zod, no CHECK;
@@ -230,6 +232,8 @@ components, forms, labels).
   are part of the key (`includeDrafts` keeps drafts away from visitors) and results must be plain JSON data.
 - Outside Next (smoke test, seed scripts) `cachedSiteRead()` reads the database directly.
 - Dynamic public routes validate their slugs with `isSlug()` before any read, so invalid URLs never reach the database or the cache.
+
+The favicon comes from settings via generateMetadata; never add src/app/icon.* or apple-icon.* files.
 
 ## Environment variables
 
