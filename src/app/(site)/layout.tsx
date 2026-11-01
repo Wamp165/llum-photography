@@ -72,7 +72,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${albertSans.variable}${montserrat.variable} h-full antialiased`}
+      className={`${albertSans.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Navbar
