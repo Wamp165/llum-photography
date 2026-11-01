@@ -30,6 +30,14 @@ export default function SettingsForm({ settings }: Props) {
         <ImageInput name="profile_picture" defaultValue={settings.profile_picture} />
       </Field>
 
+      <Field
+        label="Favicon"
+        name="favicon"
+        hint="Square image, at least 512 × 512 px. Shown in the browser tab and on phone home screens. Leave empty for no favicon."
+      >
+        <ImageInput name="favicon" defaultValue={settings.favicon} />
+      </Field>
+
       <div className="grid gap-6 sm:grid-cols-2">
         <Field label="Instagram" name="instagram" hint="Username only, without @.">
           {(id) => <Input id={id} name="instagram" defaultValue={settings.instagram ?? ""} />}

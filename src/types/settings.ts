@@ -6,6 +6,7 @@ export type Settings = {
   photographer_name: string;
   bio: string | null;
   profile_picture: string | null;
+  favicon: string | null;
   instagram: string | null;
   substack: string | null;
   contact_email: string | null;

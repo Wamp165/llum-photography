@@ -53,6 +53,7 @@ async function main() {
     const { projectFormSchema } = await import("@/lib/schemas/project");
     const { isCloudinaryImageUrl, isSlug } = await import("@/lib/schemas/common");
     const { slugify } = await import("@/lib/slugify");
+    const { siteIconUrl } = await import("@/lib/site-icon");
     const categories = await import("@/data/categories");
     const projects = await import("@/data/projects");
     const blocks = await import("@/data/project-blocks");
@@ -157,6 +158,20 @@ async function main() {
             assert(result.success && result.data === "zuzanna", `substack ${value} not normalised`);
           }
           assert(!parse("zu zanna").success, "substack with a space accepted");
+        },
+      },
+      {
+        name: "site icon url and settings favicon",
+        run: () => {
+          assert(
+            siteIconUrl("https://res.cloudinary.com/x/image/upload/v1/a.jpg", 180) ===
+              "https://res.cloudinary.com/x/image/upload/f_png,c_pad,b_white,w_180,h_180/v1/a.jpg",
+            "siteIconUrl"
+          );
+          const parse = (value: string) => settingsFormSchema.shape.favicon.safeParse(value);
+          const empty = parse("");
+          assert(empty.success && empty.data === null, "empty favicon should be null");
+          assert(!parse("https://evil.example/x.jpg").success, "foreign favicon accepted");
         },
       },
       {
