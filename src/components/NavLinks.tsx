@@ -42,12 +42,15 @@ export default function NavLinks({ links }: Props) {
         data-site-links
         className={`${isOpen ? "flex" : "hidden"} flex-col items-center gap-y-4 font-display text-body font-medium md:text-title tracking-wide md:flex md:flex-1 md:flex-row md:flex-nowrap md:justify-between md:gap-y-0 md:pl-16 lg:pl-24`}
       >
-        {links.map(({ href, label }) => {
+        {links.map(({ href, label }, index) => {
           const isActive =
             pathname === href || pathname.startsWith(`${href}/`);
 
           return (
-            <li key={href}>
+            <li
+              key={href}
+              style={{ "--i": index } as React.CSSProperties}
+            >
               <Link
                 href={href}
                 aria-current={isActive ? "page" : undefined}

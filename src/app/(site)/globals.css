@@ -85,6 +85,31 @@ body:has([data-home-hero]) {
   }
 }
 
+/* Phone menu: a bit of room under the close button, links fade in one after another. */
+@media (width < 48rem) {
+  [data-site-links] {
+    margin-top: 14px;
+  }
+
+  [data-site-links] li {
+    animation: site-link-in 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms + 60ms);
+  }
+}
+
+@keyframes site-link-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-site-links] li {
+    animation: none;
+  }
+}
+
 /* The logo: no underline, wide letter spacing. */
 [data-site-header] nav > a {
   border-color: transparent;
