@@ -55,7 +55,7 @@ export default function HomeHero({ images, altLabel }: Props) {
           sizes={SIZES_HERO}
           {...lcpProps(index === 0)}
           aria-hidden={index !== currentIndex}
-          className={`object-cover object-[center_44%] max-md:object-[58%_center] transition-opacity duration-500 ${
+          className={`object-cover object-[center_44%] max-md:object-[42%_center] transition-opacity duration-500 ${
             index === currentIndex ? "opacity-100" : "opacity-0"
           }`}
         />
