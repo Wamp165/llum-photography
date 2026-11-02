@@ -7,6 +7,9 @@
 export const SIZES_FULL =
   "(max-width: 767px) calc(100vw - 3rem), (max-width: 1100px) calc(100vw - 5rem), 1020px";
 
+/** Home page hero: the photo fills the whole viewport width. */
+export const SIZES_HERO = "100vw";
+
 /** Two columns from md with a 2.5rem gap (Editorial, image + text blocks). */
 export const SIZES_HALF_GAP_10 =
   "(max-width: 767px) calc(100vw - 3rem), (max-width: 1100px) calc((100vw - 7.5rem) / 2), 490px";
