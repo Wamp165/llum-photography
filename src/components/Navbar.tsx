@@ -20,7 +20,7 @@ export default function Navbar({
   ];
 
   return (
-    <header className="site-container pb-10 pt-10 md:pb-6 md:pt-14">
+    <header data-site-header className="site-container pb-10 pt-10 md:pb-6 md:pt-14">
       <nav className="relative flex flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
         <Link
           href="/"

@@ -42,6 +42,137 @@ html {
   }
 }
 
+/*
+ * Home page: the hero photo fills the viewport and the navbar and footer are laid over it
+ * in white. Driven by `[data-home-hero]` (HomeHero.tsx) so the layout stays shared.
+ */
+html:has([data-home-hero]) {
+  scrollbar-gutter: auto;
+  overflow: hidden;
+}
+
+body:has([data-home-hero]) {
+  position: relative;
+}
+
+/* Navbar of every page: full width, logo on the left, categories on the right. */
+[data-site-header] {
+  max-width: none;
+  padding: 26px 20px 18px;
+
+  @media (width >= 48rem) {
+    padding: 22px 28px;
+  }
+}
+
+[data-site-header] nav {
+  align-items: flex-start;
+}
+
+/* Phone: logo centered, hamburger button right under it (in the flow, not in the corner). */
+@media (width < 48rem) {
+  [data-site-header] nav {
+    align-items: center;
+    gap: 0;
+  }
+
+  [data-site-header] nav > a {
+    max-width: 22rem;
+  }
+
+  [data-site-header] nav > button {
+    position: static;
+  }
+}
+
+/* The logo: no underline, wide letter spacing. */
+[data-site-header] nav > a {
+  border-color: transparent;
+  padding-bottom: 12px;
+  font-size: 26px;
+  line-height: 1.375;
+
+  @media (width >= 48rem) {
+    font-size: 24px;
+  }
+}
+
+/* Categories: logo font, packed to the right, with an underline that slides in on hover. */
+[data-site-links] {
+  font-family: var(--font-logo);
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: normal;
+
+  @media (width >= 48rem) {
+    flex: none;
+    justify-content: flex-end;
+    gap: 36px;
+    padding-left: 0;
+    margin-top: 8px;
+    margin-right: 16px;
+  }
+}
+
+[data-site-links] a {
+  position: relative;
+  display: block;
+  padding-bottom: 4px;
+  font-weight: 400;
+  color: inherit;
+}
+
+[data-site-links] a::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 220ms ease;
+}
+
+[data-site-links] a:hover::after,
+[data-site-links] a[aria-current="page"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Home only: navbar and footer float over the photo, in white. */
+body:has([data-home-hero]) [data-site-header],
+body:has([data-home-hero]) [data-site-footer] {
+  position: absolute;
+  left: 0;
+  z-index: 20;
+  color: #fff;
+}
+
+body:has([data-home-hero]) [data-site-header] {
+  top: 0;
+}
+
+body:has([data-home-hero]) [data-site-header] button span span {
+  background-color: #fff;
+}
+
+body:has([data-home-hero]) [data-site-footer] {
+  right: 20px;
+  bottom: 18px;
+  left: 20px;
+  width: auto;
+  margin-inline: 0;
+  padding: 0;
+  font-size: 12px;
+  color: rgb(255 255 255 / 0.82);
+
+  @media (width >= 48rem) {
+    right: 28px;
+    bottom: 22px;
+    left: 28px;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
