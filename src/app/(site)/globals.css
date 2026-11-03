@@ -130,7 +130,7 @@ body:has([data-home-hero]) {
   letter-spacing: normal;
 
   @media (width >= 48rem) {
-    font-size: 18px;
+    font-size: 15px;
     flex: none;
     justify-content: flex-end;
     gap: 36px;
