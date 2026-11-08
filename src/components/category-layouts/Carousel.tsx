@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { SIZES_WIDE_CAROUSEL, lcpProps } from "@/lib/image-sizes";
+import { projectMeta } from "@/lib/project-meta";
 import type { CategoryLayoutProps } from "@/types/category-layout";
 
 const ARROW_CLASSES =
@@ -37,7 +38,7 @@ export default function Carousel({ projects }: CategoryLayoutProps) {
 
           const active = index === currentIndex;
           const href = `/${project.category_slug}/${project.slug}`;
-          const year = project.project_date?.slice(0, 4);
+          const meta = projectMeta(project);
 
           return (
             <article
@@ -66,9 +67,9 @@ export default function Carousel({ projects }: CategoryLayoutProps) {
               </Link>
 
               <div>
-                {year && (
+                {meta && (
                   <p className="mb-3 text-meta uppercase tracking-[0.2em] text-neutral-500">
-                    {year}
+                    {meta}
                   </p>
                 )}
 

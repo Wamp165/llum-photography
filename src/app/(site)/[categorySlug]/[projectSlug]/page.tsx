@@ -7,7 +7,7 @@ import { getSettings } from "@/data/settings";
 import { isSlug } from "@/lib/schemas/common";
 import { socialMetadata } from "@/lib/social-metadata";
 import { getProjectBlocks } from "@/data/project-blocks";
-import { formatProjectDate } from "@/lib/format-date";
+import { projectMeta } from "@/lib/project-meta";
 import { SIZES_FULL, lcpProps } from "@/lib/image-sizes";
 import ProjectLightbox from "@/components/ProjectLightbox";
 import BlockRenderer from "@/components/project-blocks/BlockRenderer";
@@ -109,11 +109,9 @@ export default async function ProjectPage({
           {project.title}
         </h1>
 
-        {project.project_date && (
+        {projectMeta(project) && (
           <p className="mb-8 text-meta text-neutral-400">
-            <time dateTime={project.project_date}>
-              {formatProjectDate(project.project_date)}
-            </time>
+            {projectMeta(project)}
           </p>
         )}
 

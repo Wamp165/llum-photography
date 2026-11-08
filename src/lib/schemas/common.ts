@@ -79,12 +79,19 @@ export function jsonField<T extends z.ZodType>(schema: T) {
   }).pipe(schema);
 }
 
-/** "YYYY-MM-DD" (a real calendar date) or empty → null. */
-export const optionalDate = formString.pipe(
-  z
-    .union([z.literal(""), z.iso.date({ error: "Enter a valid date." })])
-    .transform((value) => value || null)
-);
+/** A four-digit year between 1800 and 2100, or empty → null. */
+export function optionalYear(label: string) {
+  return formString.pipe(
+    z
+      .string()
+      .refine(
+        (value) =>
+          value === "" || (/^\d{4}$/.test(value) && Number(value) >= 1800 && Number(value) <= 2100),
+        `${label} must be a year between 1800 and 2100.`
+      )
+      .transform((value) => (value === "" ? null : Number(value)))
+  );
+}
 
 export const optionalEmail = formString.pipe(
   z

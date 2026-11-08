@@ -45,9 +45,37 @@ export default function ProjectForm({ action, project, categories }: Props) {
           )}
         </Field>
 
-        <Field label="Date" name="project_date" hint="Optional.">
+        <Field label="Location" name="location" hint="Optional. For example: Istanbul, Turkey.">
+          {(id) => <Input id={id} name="location" defaultValue={project.location ?? ""} />}
+        </Field>
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Field label="Start year" name="year_start" hint="Optional.">
           {(id) => (
-            <Input id={id} type="date" name="project_date" defaultValue={project.project_date ?? ""} />
+            <Input
+              id={id}
+              name="year_start"
+              type="number"
+              inputMode="numeric"
+              min={1800}
+              max={2100}
+              defaultValue={project.year_start ?? ""}
+            />
+          )}
+        </Field>
+
+        <Field label="End year" name="year_end" hint="Optional. Leave empty for a single year.">
+          {(id) => (
+            <Input
+              id={id}
+              name="year_end"
+              type="number"
+              inputMode="numeric"
+              min={1800}
+              max={2100}
+              defaultValue={project.year_end ?? ""}
+            />
           )}
         </Field>
       </div>

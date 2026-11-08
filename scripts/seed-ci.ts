@@ -39,7 +39,9 @@ async function main() {
       description: "Fake project for CI.",
       introduction: "Fake introduction.",
       cover_image: image("sample"),
-      project_date: "2024-01-01",
+      year_start: 2024,
+      year_end: 2025,
+      location: "Fake City",
     });
     await createProjectBlock(projectId, {
       type: "only_text_center",
