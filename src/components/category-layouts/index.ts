@@ -3,15 +3,15 @@ import type {
   CategoryLayout,
   CategoryLayoutProps,
 } from "@/types/category-layout";
-import Editorial from "./Editorial";
+import Showcase from "./Showcase";
 import Grid from "./Grid";
-import Featured from "./Featured";
+import Carousel from "./Carousel";
 
 export const categoryLayouts: Record<
   CategoryLayout,
   ComponentType<CategoryLayoutProps>
 > = {
-  editorial: Editorial,
+  showcase: Showcase,
   grid: Grid,
-  featured: Featured,
+  carousel: Carousel,
 };

@@ -34,15 +34,18 @@ closed set on purpose. Add new ones only when asked, following the recipes below
    endpoints; `src/proxy.ts` only checks that a cookie exists and is **not** security.
 3. **Zod on every write**: `schema.safeParse(...)` in the Server Action before calling `src/data`.
    Bound action arguments (ids, directions) come from the browser too: validate them.
-4. **Photos are never cropped**, anywhere (admin thumbnails included): no `object-cover`, no
-   fixed `aspect-*` box that crops, no hover zoom. Use `h-auto w-full`, `h-auto w-auto max-h-[..]`
-   or `fill` + `object-contain`. Never pass an empty `src` to `next/image`.
+4. **Galleries show photos whole**: the `image_gallery` block, the carousel and the lightbox never
+   crop (no `object-cover`, no fixed `aspect-*` box that crops). Use `h-auto w-full`,
+   `h-auto w-auto max-h-[..]` or `fill` + `object-contain`. Everywhere else (category layouts,
+   covers, hero, other blocks) cropping with `object-cover` is allowed when the design asks for it.
+   Cloudinary itself never crops (`c_limit`): the crop is only CSS. Never pass an empty `src` to
+   `next/image`.
 5. **shadcn/ui only in the admin.** Never import `@/components/ui/*` from public pages/components.
 6. **Every schema change is a numbered `.sql` migration** in `db/migrations/` (Better Auth's tables
    included). Never use Better Auth's own `migrate` command.
 7. Closed values (`CATEGORY_LAYOUTS`, `BLOCK_TYPES`) live only in `src/lib/constants.ts` and are
    enforced by Zod on write; the database does not check them. Unknown layouts fall back to
-   `editorial`, unknown blocks are skipped.
+   `showcase`, unknown blocks are skipped.
 8. Types for database rows are hand-written in `src/types/*`; block types are inferred from Zod.
    Components only declare their own `Props`.
 9. One `<main>` per page. Comments in English and only when they explain something non-obvious.
@@ -152,7 +155,7 @@ go in new numbered files). Current state:
   `homepage_images` (JSONB array of URLs). `getSettings()` throws if the row is missing.
 - **`categories`** — sections in the menu. `slug` unique (some slugs are reserved, see constants),
   `position` 1..n, `layout` in `CATEGORY_LAYOUTS` (enforced by Zod, no CHECK;
-  unknown stored values read as `"editorial"` via `toCategoryLayout`).
+  unknown stored values read as `"showcase"` via `toCategoryLayout`).
 - **`projects`** — `category_id` NOT NULL, `ON DELETE RESTRICT` (a category with projects can't
   be deleted). `slug` unique across all projects. `position` 1..n inside its category.
   `is_published` (public pages only show `true`; drafts are visible to the logged-in admin with a
@@ -210,7 +213,7 @@ same host as `images.remotePatterns` in `next.config.ts`).
 
 ### Add a category layout (example: `list`)
 1. `src/lib/constants.ts`: add `"list"` to `CATEGORY_LAYOUTS`.
-2. `src/components/category-layouts/List.tsx` receiving `CategoryLayoutProps` (no cropping; skip
+2. `src/components/category-layouts/List.tsx` receiving `CategoryLayoutProps` (cropping allowed; skip
    the image when `cover_image` is null; use or add a sizes constant in `src/lib/image-sizes.ts`),
    registered in `category-layouts/index.ts`.
 3. Add its label to `LAYOUT_LABELS` in `src/app/admin/(panel)/categories/CategoryForm.tsx`.
@@ -218,7 +221,7 @@ same host as `images.remotePatterns` in `next.config.ts`).
 
 ### Remove a category layout or block type
 No migration either. First move existing data off it (change those categories to another layout,
-delete those blocks), or rely on the fallback (unknown layouts read as `editorial`, unknown blocks
+delete those blocks), or rely on the fallback (unknown layouts read as `showcase`, unknown blocks
 are skipped on the public site and flagged in the admin). Then delete the code (constants, Zod,
 components, forms, labels).
 
@@ -304,7 +307,7 @@ Node 22, npm cache, 15 min timeout, one run per branch: `cancel-in-progress: tru
 3. With the server running: `/`, `/about`, every category and published project return 200; a
    draft and an unknown slug return 404; `/admin` without a session redirects to `/admin/login`.
 4. Every new Server Action starts with `await requireAdmin()`; no SQL outside `src/data/*`.
-5. Visually: no cropped photos, works at phone width (admin included).
+5. Visually: gallery photos are not cropped, works at phone width (admin included).
 
 ## When running in GitHub Actions (claude.yml)
 

@@ -11,7 +11,7 @@ import type {
 
 // --- Public reads (cached, see cachedSiteRead) --------------------------------
 
-// The database does not check `layout`: unknown stored values fall back to "editorial".
+// The database does not check `layout`: unknown stored values fall back to "showcase".
 type CategoryRow = Omit<Category, "layout"> & { layout: string };
 
 function toCategory<T extends CategoryRow>(row: T): T & Pick<Category, "layout"> {

@@ -42,6 +42,18 @@ html {
   }
 }
 
+/* Wide column for the category layouts: no max width, more side space than the navbar's. */
+/* The image sizes in src/lib/image-sizes.ts depend on this padding: update them if you change it. */
+@utility site-container-wide {
+  width: 100%;
+  padding-top: 1.25rem;
+  padding-inline: 1.25rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 4.25rem;
+  }
+}
+
 /*
  * Home page: the hero photo fills the viewport and the navbar and footer are laid over it
  * in white. Driven by `[data-home-hero]` (HomeHero.tsx) so the layout stays shared.
