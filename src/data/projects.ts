@@ -6,9 +6,6 @@ import { slugify } from "@/lib/slugify";
 import type { AdminProjectListItem, ProjectInput, SitemapProject } from "@/types/project";
 import type { ProjectListItem } from "@/types/project-list-item";
 
-// project_date is selected as a "YYYY-MM-DD" string so it does not depend
-// on the server time zone.
-
 // --- Public reads: only published projects ----------------------------------
 
 // Cached with cachedSiteRead; `includeDrafts` is part of the cache key, so a draft cached
@@ -21,7 +18,7 @@ export const getProjectsByCategory = cachedSiteRead(
       SELECT
         p.id, p.category_id, p.title, p.slug, p.description, p.position,
         p.introduction, p.cover_image,
-        to_char(p.project_date, 'YYYY-MM-DD') AS project_date,
+        p.year_start, p.year_end, p.location,
         p.is_published,
         c.slug AS category_slug
       FROM projects p
@@ -61,7 +58,7 @@ export const getProjectBySlug = cache(
       SELECT
         p.id, p.category_id, p.title, p.slug, p.description, p.position,
         p.introduction, p.cover_image,
-        to_char(p.project_date, 'YYYY-MM-DD') AS project_date,
+        p.year_start, p.year_end, p.location,
         p.is_published,
         c.slug AS category_slug
       FROM projects p
@@ -82,7 +79,7 @@ export async function getProjectById(id: number): Promise<ProjectListItem | null
     SELECT
       p.id, p.category_id, p.title, p.slug, p.description, p.position,
       p.introduction, p.cover_image,
-      to_char(p.project_date, 'YYYY-MM-DD') AS project_date,
+      p.year_start, p.year_end, p.location,
       p.is_published,
       c.slug AS category_slug
     FROM projects p
@@ -166,7 +163,9 @@ export async function updateProject(id: number, input: ProjectInput): Promise<vo
         description = ${input.description},
         introduction = ${input.introduction},
         cover_image = ${input.cover_image},
-        project_date = ${input.project_date},
+        year_start = ${input.year_start},
+        year_end = ${input.year_end},
+        location = ${input.location},
         updated_at = now()
       WHERE id = ${id}
     `;

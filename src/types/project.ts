@@ -11,8 +11,9 @@ export type Project = {
   position: number;
   introduction: string | null;
   cover_image: string | null;
-  /** "YYYY-MM-DD" */
-  project_date: string | null;
+  year_start: number | null;
+  year_end: number | null;
+  location: string | null;
   is_published: boolean;
 };
 

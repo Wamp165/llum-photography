@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { lcpProps } from "@/lib/image-sizes";
+import { projectMeta } from "@/lib/project-meta";
 import type { ProjectListItem } from "@/types/project-list-item";
 
 type Props = {
@@ -15,7 +16,7 @@ type Props = {
   lcp?: boolean;
 };
 
-// The year and description show on hover (mouse) or while the card is pressed (touch).
+// The location, years and description show on hover (mouse) or while the card is pressed (touch).
 // The grid-rows trick animates the height from 0 without measuring anything.
 const REVEAL_CLASSES =
   "grid grid-rows-[0fr] opacity-0 transition-[grid-template-rows,opacity] duration-500 group-hover:grid-rows-[1fr] group-hover:opacity-100 group-active:grid-rows-[1fr] group-active:opacity-100";
@@ -29,7 +30,7 @@ export default function ProjectCard({
   lcp,
 }: Props) {
   const large = size === "large";
-  const year = project.project_date?.slice(0, 4);
+  const meta = projectMeta(project);
 
   return (
     <Link
@@ -55,10 +56,10 @@ export default function ProjectCard({
       <div className="absolute inset-0 bg-black/40 transition-colors duration-500 group-hover:bg-black/65 group-active:bg-black/65" />
 
       <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
-        {year && (
+        {meta && (
           <div className={REVEAL_CLASSES}>
             <p className="overflow-hidden pb-3 text-meta uppercase tracking-[0.2em] text-white/80">
-              {year}
+              {meta}
             </p>
           </div>
         )}

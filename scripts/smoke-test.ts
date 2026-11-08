@@ -184,14 +184,17 @@ async function main() {
           assert(!blockSchemas.blockFormSchema.safeParse(form({ type: "only_text_center", content: "{" })).success, "bad JSON accepted");
 
           const project = projectFormSchema.safeParse(
-            form({ title: "T", slug: "Bad Slug", category_id: "1", project_date: "2023-02-30" })
+            form({ title: "T", slug: "Bad Slug", category_id: "1", year_start: "20x4" })
           );
           assert(!project.success, "bad slug/date accepted");
           const fields = new Set(project.error.issues.map((issue) => issue.path[0]));
-          assert(fields.has("slug") && fields.has("project_date"), `issues: ${[...fields].join(",")}`);
+          assert(fields.has("slug") && fields.has("year_start"), `issues: ${[...fields].join(",")}`);
 
-          const ok = projectFormSchema.safeParse(form({ title: "T", slug: "my_little_war", category_id: "1", project_date: "" }));
-          assert(ok.success && ok.data.project_date === null && ok.data.description === null, "valid project rejected");
+          const ok = projectFormSchema.safeParse(form({ title: "T", slug: "my_little_war", category_id: "1", year_start: "", year_end: "" }));
+          assert(ok.success && ok.data.year_start === null && ok.data.location === null && ok.data.description === null, "valid project rejected");
+          assert(!projectFormSchema.safeParse(form({ title: "T", slug: "t", category_id: "1", year_start: "2024", year_end: "2020" })).success, "end year before start accepted");
+          const range = projectFormSchema.safeParse(form({ title: "T", slug: "t", category_id: "1", year_start: "2020", year_end: "2024" }));
+          assert(range.success && range.data.year_start === 2020 && range.data.year_end === 2024, "year range rejected");
 
           assert(!categoryFormSchema.safeParse(form({ name: "A", slug: "admin", layout: "grid" })).success, "reserved slug accepted");
           assert(!categoryFormSchema.safeParse(form({ name: "A", slug: "a", layout: "list" })).success, "unknown layout accepted");
@@ -238,11 +241,13 @@ async function main() {
             description: "d",
             introduction: null,
             cover_image: image("cover"),
-            project_date: "2024-02-29",
+            year_start: 2024,
+            year_end: null,
+            location: "Lisbon",
           };
           await projects.updateProject(projectId, input);
           const edited = await projects.getProjectById(projectId);
-          assert(edited?.title === "Edited" && edited.project_date === "2024-02-29", JSON.stringify(edited));
+          assert(edited?.title === "Edited" && edited.year_start === 2024 && edited.year_end === null && edited.location === "Lisbon", JSON.stringify(edited));
 
           let caught: unknown;
           try {
