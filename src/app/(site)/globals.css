@@ -69,6 +69,18 @@ body:has([data-home-hero]) {
   align-items: flex-start;
 }
 
+/* Footer of every page: full width, aligned left with the same side padding as the navbar. */
+[data-site-footer] {
+  max-width: none;
+  margin-inline: 0;
+  padding: 64px 20px 18px;
+  font-size: 12px;
+
+  @media (width >= 48rem) {
+    padding: 64px 28px 22px;
+  }
+}
+
 /* Phone: logo centered, hamburger button right under it (in the flow, not in the corner). */
 @media (width < 48rem) {
   [data-site-header] nav {
@@ -187,9 +199,7 @@ body:has([data-home-hero]) [data-site-footer] {
   bottom: 18px;
   left: 20px;
   width: auto;
-  margin-inline: 0;
   padding: 0;
-  font-size: 12px;
   color: rgb(255 255 255 / 0.82);
 
   @media (width >= 48rem) {
