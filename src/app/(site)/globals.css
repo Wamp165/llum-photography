@@ -38,7 +38,7 @@ html {
   padding-inline: 1.5rem;
 
   @media (width >= 48rem) {
-    padding-inline: 2.5rem;
+    padding-inline: 3rem;
   }
 }
 
@@ -46,11 +46,11 @@ html {
 /* The image sizes in src/lib/image-sizes.ts depend on this padding: update them if you change it. */
 @utility site-container-wide {
   width: 100%;
-  padding-top: 1.25rem;
+  padding-top: 2rem;
   padding-inline: 1.25rem;
 
   @media (width >= 48rem) {
-    padding-inline: 4.25rem;
+    padding-inline: 5.5rem;
   }
 }
 

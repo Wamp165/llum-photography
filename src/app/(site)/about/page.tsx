@@ -1,7 +1,8 @@
+import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getSettings } from "@/data/settings";
-import { SIZES_HALF_GAP_16, lcpProps } from "@/lib/image-sizes";
+import { SIZES_WIDE_ABOUT, lcpProps } from "@/lib/image-sizes";
 import { excerpt, socialMetadata } from "@/lib/social-metadata";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -22,24 +23,28 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AboutPage() {
   const settings = await getSettings();
+  const hasPhoto = Boolean(settings.profile_picture);
 
   return (
-    <div className="site-container pb-24">
-      <section className="grid items-start gap-10 md:grid-cols-2 md:gap-16">
+    <div className="site-container-wide pb-16">
+      <section
+        className={`grid items-start gap-10 ${hasPhoto ? "md:grid-cols-2" : "mx-auto max-w-2xl"}`}
+      >
         {settings.profile_picture && (
-          <Image
-            src={settings.profile_picture}
-            alt={settings.photographer_name}
-            width={1200}
-            height={800}
-            sizes={SIZES_HALF_GAP_16}
-            {...lcpProps(true)}
-            className="h-auto w-full"
-          />
+          <div className="relative h-[45svh] min-h-[18rem] overflow-hidden bg-neutral-100 md:h-[60svh]">
+            <Image
+              src={settings.profile_picture}
+              alt={settings.photographer_name}
+              fill
+              sizes={SIZES_WIDE_ABOUT}
+              {...lcpProps(true)}
+              className="object-cover"
+            />
+          </div>
         )}
 
-        <div>
-          <h1 className="mb-6 text-center text-display font-semibold">
+        <div className="md:pt-8">
+          <h1 className="mb-6 text-display font-semibold">
             About me
           </h1>
 
@@ -48,73 +53,60 @@ export default async function AboutPage() {
               {settings.bio}
             </p>
           )}
-        </div>
-      </section>
 
-      <hr className="mx-auto my-16 w-1/2 border-neutral-800" />
-
-      <section className="space-y-8 text-center text-body">
-        {settings.location && (
-          <div>
-            <h2 className="mb-2 text-title font-semibold">
-              Based in:
-            </h2>
-
-            <p>{settings.location}</p>
-          </div>
-        )}
-
-        {(settings.instagram || settings.substack) && (
-          <div>
-            <h2 className="mb-2 text-title font-semibold">
-              Find me on:
-            </h2>
+          <dl className="mt-8 border-t border-neutral-200 text-body">
+            {settings.location && (
+              <InfoRow label="Based in">{settings.location}</InfoRow>
+            )}
 
             {settings.instagram && (
-              <div>
+              <InfoRow label="Instagram">
                 <a
                   href={`https://instagram.com/${settings.instagram}`}
                   target="_blank"
                   rel="noreferrer"
                   className="hover:underline"
                 >
-                  <span className="font-semibold text-neutral-500">Instagram:</span>{" "}
                   {settings.instagram}
                 </a>
-              </div>
+              </InfoRow>
             )}
 
             {settings.substack && (
-              <div>
+              <InfoRow label="Substack">
                 <a
                   href={`https://${settings.substack}.substack.com`}
                   target="_blank"
                   rel="noreferrer"
                   className="hover:underline"
                 >
-                  <span className="font-semibold text-neutral-500">Substack:</span>{" "}
                   {settings.substack}
                 </a>
-              </div>
+              </InfoRow>
             )}
-          </div>
-        )}
 
-        {settings.contact_email && (
-          <div>
-            <h2 className="mb-2 text-title font-semibold">
-              Email me:
-            </h2>
-
-            <a
-              href={`mailto:${settings.contact_email}`}
-              className="hover:underline"
-            >
-              {settings.contact_email}
-            </a>
-          </div>
-        )}
+            {settings.contact_email && (
+              <InfoRow label="Email">
+                <a
+                  href={`mailto:${settings.contact_email}`}
+                  className="break-all hover:underline"
+                >
+                  {settings.contact_email}
+                </a>
+              </InfoRow>
+            )}
+          </dl>
+        </div>
       </section>
+    </div>
+  );
+}
+
+function InfoRow({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="grid grid-cols-[6.5rem_1fr] items-baseline gap-4 border-b border-neutral-200 py-3">
+      <dt className="text-meta uppercase tracking-[0.2em] text-neutral-500">{label}</dt>
+      <dd>{children}</dd>
     </div>
   );
 }
