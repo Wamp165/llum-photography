@@ -85,7 +85,7 @@ export default async function ProjectPage({
   ];
 
   return (
-    <article className="site-container pb-24">
+    <article className="site-container pb-24 pt-8">
       {!project.is_published && (
         <p className="mt-4 border-y border-neutral-200 py-2 text-center text-meta uppercase tracking-wide text-neutral-500">
           Draft — not public
