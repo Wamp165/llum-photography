@@ -14,20 +14,20 @@ export const SIZES_HERO = "100vw";
 export const SIZES_HALF_GAP_10 =
   "(max-width: 767px) calc(100vw - 3rem), (max-width: 1100px) calc((100vw - 7.5rem) / 2), 490px";
 
-// Category layouts use `site-container-wide`: 1.25rem per side below 768px, 1.75rem from md,
+// Category layouts use `site-container-wide`: 1.25rem per side below 768px, 4.25rem from md,
 // no max width. Their cards are `fill` + `object-cover`, so these are the box widths.
 
 /** One card across the wide column (Showcase). */
 export const SIZES_WIDE_FULL =
-  "(max-width: 767px) calc(100vw - 2.5rem), calc(100vw - 3.5rem)";
+  "(max-width: 767px) calc(100vw - 2.5rem), calc(100vw - 8.5rem)";
 
 /** Carousel: cover on the left, 3fr of 3fr + 2fr from md, 2.5rem gap. */
 export const SIZES_WIDE_CAROUSEL =
-  "(max-width: 767px) calc(100vw - 2.5rem), calc((100vw - 6rem) * 0.6)";
+  "(max-width: 767px) calc(100vw - 2.5rem), calc((100vw - 11rem) * 0.6)";
 
 /** One column, two from md, three from lg, 1.5rem gaps (Grid). */
 export const SIZES_WIDE_THIRD =
-  "(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1023px) calc((100vw - 5rem) / 2), calc((100vw - 6.5rem) / 3)";
+  "(max-width: 767px) calc(100vw - 2.5rem), (max-width: 1023px) calc((100vw - 10rem) / 2), calc((100vw - 11.5rem) / 3)";
 
 /** Two columns from md with a 4rem gap (About page). */
 export const SIZES_HALF_GAP_16 =

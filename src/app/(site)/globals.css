@@ -42,14 +42,15 @@ html {
   }
 }
 
-/* Full-bleed column: same side padding as the navbar, no max width (category layouts). */
+/* Wide column for the category layouts: no max width, more side space than the navbar's. */
 /* The image sizes in src/lib/image-sizes.ts depend on this padding: update them if you change it. */
 @utility site-container-wide {
   width: 100%;
+  padding-top: 1.25rem;
   padding-inline: 1.25rem;
 
   @media (width >= 48rem) {
-    padding-inline: 1.75rem;
+    padding-inline: 4.25rem;
   }
 }
 
