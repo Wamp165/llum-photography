@@ -14,7 +14,7 @@ export default function Showcase({
           key={project.id}
           project={project}
           sizes={SIZES_WIDE_FULL}
-          heightClassName="h-[75svh] min-h-[26rem] md:h-[45rem]"
+          heightClassName="h-[60svh] min-h-[22rem] md:h-[45rem]"
           lcp={project.id === lcpId}
         />
       ))}
