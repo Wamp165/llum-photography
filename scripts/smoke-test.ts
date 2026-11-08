@@ -329,17 +329,17 @@ async function main() {
         },
       },
       {
-        name: "category with an unknown layout is read back as editorial",
+        name: "category with an unknown layout is read back as showcase",
         run: async () => {
           const [row] = await sql<{ id: number }[]>`
             INSERT INTO categories (name, slug, layout, position)
             VALUES ('Legacy', 'legacy', 'list', 99)
             RETURNING id
           `;
-          assert((await categories.getCategoryBySlug("legacy"))?.layout === "editorial", "getCategoryBySlug");
-          assert((await categories.getCategories()).find((c) => c.slug === "legacy")?.layout === "editorial", "getCategories");
+          assert((await categories.getCategoryBySlug("legacy"))?.layout === "showcase", "getCategoryBySlug");
+          assert((await categories.getCategories()).find((c) => c.slug === "legacy")?.layout === "showcase", "getCategories");
           const admin = (await categories.getCategoriesWithProjectCount()).find((c) => c.slug === "legacy");
-          assert(admin?.layout === "editorial", "getCategoriesWithProjectCount");
+          assert(admin?.layout === "showcase", "getCategoriesWithProjectCount");
           assert((await categories.deleteCategory(row.id)) === true, "cleanup");
         },
       },

@@ -17,9 +17,9 @@ type Props = {
 };
 
 const LAYOUT_LABELS: Record<CategoryLayout, string> = {
-  editorial: "Editorial — one project per row, text beside the cover",
+  showcase: "Showcase — one large cover per project, stacked",
   grid: "Grid — up to 3 columns",
-  featured: "Featured — first project large, the rest below",
+  carousel: "Carousel — one project at a time, with arrows",
 };
 
 export default function CategoryForm({ action, category }: Props) {
@@ -49,7 +49,7 @@ export default function CategoryForm({ action, category }: Props) {
           <SelectField
             id={id}
             name="layout"
-            defaultValue={category?.layout ?? "editorial"}
+            defaultValue={category?.layout ?? "showcase"}
             options={CATEGORY_LAYOUTS.map((layout) => ({ value: layout, label: LAYOUT_LABELS[layout] }))}
           />
         )}

@@ -4,7 +4,7 @@ import type { CategoryLayout } from "@/types/category-layout";
 // write and the database does not check them (unknown stored values are handled on read).
 
 /** categories.layout */
-export const CATEGORY_LAYOUTS = ["editorial", "grid", "featured"] as const;
+export const CATEGORY_LAYOUTS = ["showcase", "grid", "carousel"] as const;
 
 /** project_blocks.type */
 export const BLOCK_TYPES = [
@@ -17,11 +17,11 @@ export const BLOCK_TYPES = [
   "image_center_text_below",
 ] as const;
 
-/** Reads a stored layout: unknown values (e.g. a removed layout) fall back to "editorial". */
+/** Reads a stored layout: unknown values (e.g. a removed layout) fall back to "showcase". */
 export function toCategoryLayout(value: string): CategoryLayout {
   return (CATEGORY_LAYOUTS as readonly string[]).includes(value)
     ? (value as CategoryLayout)
-    : "editorial";
+    : "showcase";
 }
 
 export const MAX_GALLERY_IMAGES = 3;

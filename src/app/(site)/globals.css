@@ -42,6 +42,17 @@ html {
   }
 }
 
+/* Full-bleed column: same side padding as the navbar, no max width (category layouts). */
+/* The image sizes in src/lib/image-sizes.ts depend on this padding: update them if you change it. */
+@utility site-container-wide {
+  width: 100%;
+  padding-inline: 1.25rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 1.75rem;
+  }
+}
+
 /*
  * Home page: the hero photo fills the viewport and the navbar and footer are laid over it
  * in white. Driven by `[data-home-hero]` (HomeHero.tsx) so the layout stays shared.
