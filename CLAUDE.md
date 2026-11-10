@@ -172,7 +172,7 @@ go in new numbered files). Current state:
 | Block type | content |
 | --- | --- |
 | `only_text_center` | `{ text }` |
-| `image_gallery` | `{ images }` — 1 to 3 when saving (side by side; older rows with more show in rows of 3) |
+| `image_gallery` | `{ images }` — 1 to 5 when saving (side by side; older rows with more show in rows of 5) |
 | `carousel` | `{ images }` — 1 or more (one image shows without arrows) |
 | `image_left_text_right`, `image_right_text_left`, `image_center_text_above`, `image_center_text_below` | `{ image, text }` |
 

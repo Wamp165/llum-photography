@@ -40,7 +40,7 @@ function makeProjectBlockSchema(maxGalleryImages: number | undefined) {
   ]);
 }
 
-/** For saving from the admin (strict: a gallery has 1 to 3 images). */
+/** For saving from the admin (strict: a gallery has 1 to 5 images). */
 export const projectBlockSchema = makeProjectBlockSchema(MAX_GALLERY_IMAGES);
 
 /** For reading stored rows (tolerant: never hide content that is already published). */

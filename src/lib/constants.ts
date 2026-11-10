@@ -24,7 +24,7 @@ export function toCategoryLayout(value: string): CategoryLayout {
     : "showcase";
 }
 
-export const MAX_GALLERY_IMAGES = 3;
+export const MAX_GALLERY_IMAGES = 5;
 
 /** Cloudinary folder for admin uploads. */
 export const CLOUDINARY_UPLOAD_FOLDER = "llum";
