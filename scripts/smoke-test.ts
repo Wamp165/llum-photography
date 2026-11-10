@@ -118,11 +118,13 @@ async function main() {
         },
       },
       {
-        name: "gallery: 1 to 3 images when saving, more still readable",
+        name: "gallery: 1 to 5 images when saving, more still readable",
         run: () => {
-          const four = { type: "image_gallery", content: { images: ["a", "b", "c", "d"].map(image) } };
-          assert(!blockSchemas.projectBlockSchema.safeParse(four).success, "4 images accepted on save");
-          assert(blockSchemas.storedProjectBlockSchema.safeParse(four).success, "4 images rejected on read");
+          const five = { type: "image_gallery", content: { images: ["a", "b", "c", "d", "e"].map(image) } };
+          const six = { type: "image_gallery", content: { images: ["a", "b", "c", "d", "e", "f"].map(image) } };
+          assert(blockSchemas.projectBlockSchema.safeParse(five).success, "5 images rejected on save");
+          assert(!blockSchemas.projectBlockSchema.safeParse(six).success, "6 images accepted on save");
+          assert(blockSchemas.storedProjectBlockSchema.safeParse(six).success, "6 images rejected on read");
         },
       },
       {
