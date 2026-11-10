@@ -8,7 +8,7 @@ import { isSlug } from "@/lib/schemas/common";
 import { socialMetadata } from "@/lib/social-metadata";
 import { getProjectBlocks } from "@/data/project-blocks";
 import { projectMeta } from "@/lib/project-meta";
-import { SIZES_FULL, lcpProps } from "@/lib/image-sizes";
+import { SIZES_HALF_GAP_10, lcpProps } from "@/lib/image-sizes";
 import ProjectLightbox from "@/components/ProjectLightbox";
 import BlockRenderer from "@/components/project-blocks/BlockRenderer";
 
@@ -85,42 +85,51 @@ export default async function ProjectPage({
   ];
 
   return (
-    <article className="site-container pb-24 pt-8">
+    <article className="site-container-wide pb-24">
       {!project.is_published && (
         <p className="mt-4 border-y border-neutral-200 py-2 text-center text-meta uppercase tracking-wide text-neutral-500">
           Draft — not public
         </p>
       )}
 
-      {project.cover_image && (
-        <Image
-          src={project.cover_image}
-          alt={project.title}
-          width={2000}
-          height={1333}
-          sizes={SIZES_FULL}
-          {...lcpProps(true)}
-          className="h-auto max-h-[85vh] w-full object-contain"
-        />
-      )}
-
-      <header className="mt-10">
-        <h1 className="mb-2 text-display font-semibold">
-          {project.title}
-        </h1>
-
-        {projectMeta(project) && (
-          <p className="mb-8 text-meta text-neutral-400">
-            {projectMeta(project)}
-          </p>
+      {/* Phone: cover above, text below. From md: cover left, text right. */}
+      <div
+        className={
+          project.cover_image
+            ? "md:grid md:grid-cols-2 md:items-start md:gap-10"
+            : undefined
+        }
+      >
+        {project.cover_image && (
+          <Image
+            src={project.cover_image}
+            alt={project.title}
+            width={2000}
+            height={1333}
+            sizes={SIZES_HALF_GAP_10}
+            {...lcpProps(true)}
+            className="h-auto max-h-[85vh] w-full object-contain object-left-top"
+          />
         )}
 
-        {project.introduction && (
-          <p className="whitespace-pre-line text-body">
-            {project.introduction}
-          </p>
-        )}
-      </header>
+        <header className={project.cover_image ? "mt-10 md:mt-0" : "mt-10"}>
+          <h1 className="mb-2 text-display font-semibold">
+            {project.title}
+          </h1>
+
+          {projectMeta(project) && (
+            <p className="mb-8 text-meta text-neutral-400">
+              {projectMeta(project)}
+            </p>
+          )}
+
+          {project.introduction && (
+            <p className="whitespace-pre-line text-body">
+              {project.introduction}
+            </p>
+          )}
+        </header>
+      </div>
 
       <ProjectLightbox images={lightboxImages} label={project.title}>
         {blocks.map((block) => (

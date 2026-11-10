@@ -1,5 +1,5 @@
 import LightboxImage from "@/components/LightboxImage";
-import { SIZES_FULL, SIZES_GALLERY_2, SIZES_GALLERY_3, lcpProps } from "@/lib/image-sizes";
+import { SIZES_FULL, SIZES_GALLERY_2, SIZES_GALLERY_3, SIZES_GALLERY_4, SIZES_GALLERY_5, lcpProps } from "@/lib/image-sizes";
 
 type Props = {
   images: string[];
@@ -10,6 +10,15 @@ type Props = {
 const COLUMNS = {
   2: "md:grid-cols-2",
   3: "md:grid-cols-3",
+  4: "md:grid-cols-4",
+  5: "md:grid-cols-5",
+};
+
+const SIZES = {
+  2: SIZES_GALLERY_2,
+  3: SIZES_GALLERY_3,
+  4: SIZES_GALLERY_4,
+  5: SIZES_GALLERY_5,
 };
 
 export default function ImageGallery({
@@ -37,8 +46,10 @@ export default function ImageGallery({
     );
   }
 
-  const columns = images.length === 2 ? COLUMNS[2] : COLUMNS[3];
-  const imageSizes = images.length === 2 ? SIZES_GALLERY_2 : SIZES_GALLERY_3;
+  // Older rows may hold more than 5 images: they show in rows of 5.
+  const count = Math.min(images.length, 5) as 2 | 3 | 4 | 5;
+  const columns = COLUMNS[count];
+  const imageSizes = SIZES[count];
 
   return (
     <section

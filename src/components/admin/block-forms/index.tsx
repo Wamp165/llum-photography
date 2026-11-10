@@ -32,7 +32,7 @@ function CarouselBlockFields({ initial }: BlockFieldsProps<"carousel">) {
 // BLOCK_TYPES without a form here is a compile error.
 export const blockForms: { [T in BlockType]: BlockFormEntry<T> } = {
   only_text_center: { label: "Text", Fields: TextBlockFields },
-  image_gallery: { label: "Gallery (1–3 images side by side)", Fields: GalleryBlockFields },
+  image_gallery: { label: "Gallery (1–5 images side by side)", Fields: GalleryBlockFields },
   carousel: { label: "Carousel", Fields: CarouselBlockFields },
   image_left_text_right: { label: "Image left, text right", Fields: ImageTextBlockFields },
   image_right_text_left: { label: "Text left, image right", Fields: ImageTextBlockFields },
