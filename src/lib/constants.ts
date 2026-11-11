@@ -1,6 +1,6 @@
 import type { CategoryLayout } from "@/types/category-layout";
 
-// Closed sets of values. These arrays are the source of truth: Zod enforces them on
+// Allowed values. These arrays are the source of truth: Zod enforces them on
 // write and the database does not check them (unknown stored values are handled on read).
 
 /** categories.layout */

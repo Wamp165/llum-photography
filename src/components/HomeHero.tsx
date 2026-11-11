@@ -13,9 +13,8 @@ const ARROW_CLASSES =
   "absolute top-1/2 z-10 -translate-y-1/2 px-3 text-6xl font-extralight text-white/70 transition-colors duration-200 hover:text-white";
 
 /**
- * Full-screen home image. It is the one place where a photo is cropped (`object-cover`),
- * on purpose: the photo fills the whole viewport. The navbar and footer sit on top of it
- * (see the `[data-home-hero]` rules in globals.css).
+ * Full-screen home image. The photo fills the whole viewport, so it is cropped (`object-cover`).
+ * The navbar and footer sit on top of it (see the `[data-home-hero]` rules in globals.css).
  */
 export default function HomeHero({ images, altLabel }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
