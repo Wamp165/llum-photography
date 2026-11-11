@@ -61,7 +61,7 @@ needs it, following the recipes below. Keep each one simple and self-contained.
 12. Public fonts: **Albert Sans** for all text (`font-sans` and `font-display` both map to it) and
     **Montserrat** only for the logo (`font-logo`). Public pages use only `text-meta`, `text-body`,
     `text-title` and `text-display` for font sizes (tokens in `(site)/globals.css`); never
-    `text-xs/sm/base/lg/xl/2xl`. The logo keeps its own size.
+    `text-xs/sm/base/lg/xl/2xl`. The logo, the navbar links, the footer and the arrow glyphs of carousels and the lightbox keep their own sizes.
 
 ## Folder map
 

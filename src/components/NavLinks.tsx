@@ -22,7 +22,7 @@ export default function NavLinks({ links }: Props) {
         aria-expanded={isOpen}
         aria-controls="site-menu"
         onClick={() => setOpenAt(isOpen ? null : pathname)}
-        className="absolute right-0 top-0 flex size-10 items-center justify-center md:hidden"
+        className="flex size-10 items-center justify-center md:hidden"
       >
         <span className="relative block h-3.5 w-6">
           <span
@@ -40,7 +40,7 @@ export default function NavLinks({ links }: Props) {
       <ul
         id="site-menu"
         data-site-links
-        className={`${isOpen ? "flex" : "hidden"} flex-col items-center gap-y-4 font-display text-body font-medium md:text-title tracking-wide md:flex md:flex-1 md:flex-row md:flex-nowrap md:justify-between md:gap-y-0 md:pl-16 lg:pl-24`}
+        className={`${isOpen ? "flex" : "hidden"} mt-[14px] flex-col items-center gap-y-4 font-logo text-[15px] leading-[1.7] font-normal md:mt-2 md:mr-4 md:flex md:flex-none md:flex-row md:flex-nowrap md:justify-end md:gap-9 md:leading-[1.3]`}
       >
         {links.map(({ href, label }, index) => {
           const isActive =
@@ -54,9 +54,7 @@ export default function NavLinks({ links }: Props) {
               <Link
                 href={href}
                 aria-current={isActive ? "page" : undefined}
-                className={
-                  isActive ? "font-semibold" : "hover:text-neutral-500"
-                }
+                className="relative block pb-1 font-normal"
               >
                 {label}
               </Link>
