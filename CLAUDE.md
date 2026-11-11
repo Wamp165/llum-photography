@@ -163,7 +163,7 @@ go in new numbered files). Current state:
   be deleted). `slug` unique across all projects. `position` 1..n inside its category.
   `is_published` (public pages only show `true`; drafts are visible to the logged-in admin with a
   "Draft — not public" strip). `description` (list), `introduction` (project page), `cover_image`,
-  `year_start` and `year_end` (SMALLINT, optional; `project_date` is legacy and no longer read), `location` (TEXT, optional), `created_at`, `updated_at`.
+  `year_start` and `year_end` (SMALLINT, optional), `location` (TEXT, optional), `created_at`, `updated_at`.
 - **`project_blocks`** — ordered blocks of a project, `ON DELETE CASCADE`. `type` in `BLOCK_TYPES`
   (enforced by Zod, no CHECK), `content` JSONB object validated by
   `src/lib/schemas/project-block.ts`, `position` 1..n. Invalid rows (unknown types included) are skipped on the public site
