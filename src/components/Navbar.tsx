@@ -20,11 +20,11 @@ export default function Navbar({
   ];
 
   return (
-    <header data-site-header className="site-container pb-10 pt-10 md:pb-6 md:pt-14">
-      <nav className="relative flex flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
+    <header data-site-header className="w-full px-5 pt-[26px] pb-[18px] md:px-7 md:py-[22px]">
+      <nav className="relative flex flex-col items-center md:flex-row md:items-start md:justify-between md:gap-8">
         <Link
           href="/"
-          className="max-w-[min(17rem,calc(100%-6rem))] md:max-w-[17rem] text-balance border-b border-neutral-800 pb-3 text-center font-logo text-2xl font-normal uppercase leading-snug tracking-[0.3em]"
+          className="max-w-[22rem] md:max-w-[17rem] text-balance border-b border-transparent pb-3 text-center font-logo text-[26px] md:text-[24px] font-normal uppercase leading-snug tracking-[0.3em]"
         >
           {photographerName}
         </Link>

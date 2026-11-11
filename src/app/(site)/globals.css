@@ -29,19 +29,6 @@ html {
   scrollbar-gutter: stable;
 }
 
-/* Column of the navbar only (its `[data-site-header]` rules below override the width and padding). */
-/* The image sizes in src/lib/image-sizes.ts depend on this padding and max width: update them if you change it. */
-@utility site-container {
-  width: 100%;
-  max-width: 1100px;
-  margin-inline: auto;
-  padding-inline: 1.5rem;
-
-  @media (width >= 48rem) {
-    padding-inline: 3rem;
-  }
-}
-
 /* Wide column of every public page (category layouts, project pages, About): no max width. */
 /* The image sizes in src/lib/image-sizes.ts depend on this padding: update them if you change it. */
 @utility site-container-wide {
@@ -67,54 +54,8 @@ body:has([data-home-hero]) {
   position: relative;
 }
 
-/* Navbar of every page: full width, logo on the left, categories on the right. */
-[data-site-header] {
-  max-width: none;
-  padding: 26px 20px 18px;
-
-  @media (width >= 48rem) {
-    padding: 22px 28px;
-  }
-}
-
-[data-site-header] nav {
-  align-items: flex-start;
-}
-
-/* Footer of every page: full width, aligned left with the same side padding as the navbar. */
-[data-site-footer] {
-  max-width: none;
-  margin-inline: 0;
-  padding: 64px 20px 18px;
-  font-size: 12px;
-
-  @media (width >= 48rem) {
-    padding: 64px 28px 22px;
-  }
-}
-
-/* Phone: logo centered, hamburger button right under it (in the flow, not in the corner). */
+/* Phone menu: links fade in one after another. */
 @media (width < 48rem) {
-  [data-site-header] nav {
-    align-items: center;
-    gap: 0;
-  }
-
-  [data-site-header] nav > a {
-    max-width: 22rem;
-  }
-
-  [data-site-header] nav > button {
-    position: static;
-  }
-}
-
-/* Phone menu: a bit of room under the close button, links fade in one after another. */
-@media (width < 48rem) {
-  [data-site-links] {
-    margin-top: 14px;
-  }
-
   [data-site-links] li {
     animation: site-link-in 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-delay: calc(var(--i, 0) * 70ms + 60ms);
@@ -134,44 +75,7 @@ body:has([data-home-hero]) {
   }
 }
 
-/* The logo: no underline, wide letter spacing. */
-[data-site-header] nav > a {
-  border-color: transparent;
-  padding-bottom: 12px;
-  font-size: 26px;
-  line-height: 1.375;
-
-  @media (width >= 48rem) {
-    font-size: 24px;
-  }
-}
-
-/* Categories: logo font, packed to the right, with an underline that slides in on hover. */
-[data-site-links] {
-  font-family: var(--font-logo);
-  font-size: 15px;
-  font-weight: 400;
-  letter-spacing: normal;
-
-  @media (width >= 48rem) {
-    font-size: 15px;
-    flex: none;
-    justify-content: flex-end;
-    gap: 36px;
-    padding-left: 0;
-    margin-top: 8px;
-    margin-right: 16px;
-  }
-}
-
-[data-site-links] a {
-  position: relative;
-  display: block;
-  padding-bottom: 4px;
-  font-weight: 400;
-  color: inherit;
-}
-
+/* Navbar links: underline that slides in on hover and marks the current page. */
 [data-site-links] a::after {
   content: "";
   position: absolute;
