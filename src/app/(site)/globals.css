@@ -29,7 +29,7 @@ html {
   scrollbar-gutter: stable;
 }
 
-/* The one content column of the public site: the navbar and every page share its edges. */
+/* Column of the navbar only (its `[data-site-header]` rules below override the width and padding). */
 /* The image sizes in src/lib/image-sizes.ts depend on this padding and max width: update them if you change it. */
 @utility site-container {
   width: 100%;
@@ -42,7 +42,7 @@ html {
   }
 }
 
-/* Wide column for the category layouts: no max width, more side space than the navbar's. */
+/* Wide column of every public page (category layouts, project pages, About): no max width. */
 /* The image sizes in src/lib/image-sizes.ts depend on this padding: update them if you change it. */
 @utility site-container-wide {
   width: 100%;

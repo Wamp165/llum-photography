@@ -3,7 +3,7 @@ import { MAX_GALLERY_IMAGES, type BLOCK_TYPES } from "@/lib/constants";
 import { cloudinaryImageUrl, formString, jsonField } from "./common";
 
 // Content of project_blocks rows. `type` decides the shape of `content`.
-// Adding a block type: see "Recipe: add a block type" in CLAUDE.md.
+// Adding a block type: see the "Add a block type" recipe in CLAUDE.md.
 
 const text = z
   .string({ error: "Text is required." })

@@ -2,8 +2,9 @@
 
 Portfolio site + private admin for **one** photographer. One admin account, no public sign-up.
 
-It is **not** a page builder or a generic CMS. Block types and category layouts are a small,
-closed set on purpose. Add new ones only when asked, following the recipes below.
+Pages are built from **category layouts** and **project block types**. Both are meant to evolve:
+create new ones or change existing ones (design, content fields, behaviour) whenever a request
+needs it, following the recipes below. Keep each one simple and self-contained.
 
 ## Stack and decisions
 
@@ -16,7 +17,9 @@ closed set on purpose. Add new ones only when asked, following the recipes below
   `account`, `verification`, `rateLimit`) through its `pg` pool. Our code never queries them;
   it uses `auth.api` / `auth.$context`.
 - **shadcn/ui only in the admin** (`src/components/ui`, `src/app/admin/admin.css`).
-  The public site keeps its own editorial design (`src/app/(site)/globals.css`).
+  The public site has its own styles (`src/app/(site)/globals.css` + Tailwind classes) and does
+  not follow any fixed visual style: change the design when a request asks for it.
+- The favicon comes from settings via `generateMetadata`; never add `src/app/icon.*` or `apple-icon.*` files.
 - Images on **Cloudinary**, rendered with `next/image` through a custom loader
   (`src/lib/cloudinary-loader.ts`): Cloudinary resizes (`c_limit`, never crops), not our server.
   Admin uploads: next-cloudinary's signed widget. The `sizes` of public images live in
@@ -43,7 +46,7 @@ closed set on purpose. Add new ones only when asked, following the recipes below
 5. **shadcn/ui only in the admin.** Never import `@/components/ui/*` from public pages/components.
 6. **Every schema change is a numbered `.sql` migration** in `db/migrations/` (Better Auth's tables
    included). Never use Better Auth's own `migrate` command.
-7. Closed values (`CATEGORY_LAYOUTS`, `BLOCK_TYPES`) live only in `src/lib/constants.ts` and are
+7. The lists of layouts and block types (`CATEGORY_LAYOUTS`, `BLOCK_TYPES`) live only in `src/lib/constants.ts` and are
    enforced by Zod on write; the database does not check them. Unknown layouts fall back to
    `showcase`, unknown blocks are skipped.
 8. Types for database rows are hand-written in `src/types/*`; block types are inferred from Zod.
@@ -51,7 +54,7 @@ closed set on purpose. Add new ones only when asked, following the recipes below
 9. One `<main>` per page. Comments in English and only when they explain something non-obvious.
 10. No new dependencies unless the user asks.
 11. If you change widths, paddings, gaps, max widths or columns of the public site (globals.css
-    `site-container`, category layouts, project blocks, carousel, About), update the matching sizes
+    `site-container-wide`, category layouts, project blocks, carousel, About), update the matching sizes
     in `src/lib/image-sizes.ts` in the same change. Each constant must match the image's real
     rendered width at phone, tablet and desktop widths. New public images use a constant from that
     file (add one if needed), never an inline sizes string.
@@ -189,14 +192,14 @@ same host as `images.remotePatterns` in `next.config.ts`).
 4. Update `src/types/*` and the schema section above.
 5. Test on an empty database too: `npm run test:smoke` applies every migration to a throwaway DB.
 
-### Add an editable field to an entity (example: `projects.location`)
-1. Migration: `ALTER TABLE projects ADD COLUMN IF NOT EXISTS location TEXT;` → `npm run db:migrate`.
-2. Type: add `location: string | null` to `Project` in `src/types/project.ts`.
+### Add an editable field to an entity (example: `projects.client`)
+1. Migration: `ALTER TABLE projects ADD COLUMN IF NOT EXISTS client TEXT;` → `npm run db:migrate`.
+2. Type: add `client: string | null` to `Project` in `src/types/project.ts`.
 3. Data: add the column to the SELECTs and the UPDATE in `src/data/projects.ts`.
-4. Validation: add `location: optionalText("Location", 200)` to `projectFormSchema`
+4. Validation: add `client: optionalText("Client", 200)` to `projectFormSchema`
    (`src/lib/schemas/project.ts`); `ProjectInput` updates itself.
-5. Form: add `<Field label="Location" name="location">{(id) => <Input id={id} name="location"
-   defaultValue={project.location ?? ""} />}</Field>` to `ProjectForm.tsx`.
+5. Form: add `<Field label="Client" name="client">{(id) => <Input id={id} name="client"
+   defaultValue={project.client ?? ""} />}</Field>` to `ProjectForm.tsx`.
 6. Show it on the public page if needed. Run the checks below.
 
 ### Add a block type (example: `quote` with `{ text, author }`)
@@ -219,6 +222,18 @@ same host as `images.remotePatterns` in `next.config.ts`).
 3. Add its label to `LAYOUT_LABELS` in `src/app/admin/(panel)/categories/CategoryForm.tsx`.
 4. `npx tsc --noEmit` and `npm run test:smoke`. No migration: the database doesn't check layouts.
 
+### Change an existing category layout or block type
+- **Design only** (spacing, sizes, columns, hover, typography): edit its component. If image widths
+  change, update its constant in `src/lib/image-sizes.ts` in the same change (rule 11).
+- **Block content shape** (add, rename or remove a field of `content`): update the Zod schema in
+  `src/lib/schemas/project-block.ts`, its admin form and `BlockSummary.tsx`, and the block table
+  above. Stored rows must keep reading: a new field is optional (or has a default) in the read
+  schema; renaming or removing a field needs a migration that rewrites `content`
+  (`UPDATE project_blocks SET content = ... WHERE type = '...'`).
+- **Rename a layout or block type**: change it in the code (constants, Zod, components, maps,
+  labels) and add a migration that updates the stored values (see `005_rename_category_layouts.sql`).
+- `npx tsc --noEmit` and `npm run test:smoke`.
+
 ### Remove a category layout or block type
 No migration either. First move existing data off it (change those categories to another layout,
 delete those blocks), or rely on the fallback (unknown layouts read as `showcase`, unknown blocks
@@ -239,8 +254,6 @@ components, forms, labels).
   are part of the key (`includeDrafts` keeps drafts away from visitors) and results must be plain JSON data.
 - Outside Next (smoke test, seed scripts) `cachedSiteRead()` reads the database directly.
 - Dynamic public routes validate their slugs with `isSlug()` before any read, so invalid URLs never reach the database or the cache.
-
-The favicon comes from settings via generateMetadata; never add src/app/icon.* or apple-icon.* files.
 
 ## Environment variables
 
